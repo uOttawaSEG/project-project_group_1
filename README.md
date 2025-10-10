@@ -25,3 +25,6 @@ UserRepository.java – Acts as the single data access point for the UI layer. I
     verifyPassword() (login verification)
 PasswordHasher.java – Handles secure password hashing and verification using SHA-256.
 Converters.java – Supports complex data types (e.g., lists) for Room database storage.
+
+Here is the demo video for part A, check if you need.
+    https://youtu.be/s9Tz-WWsOkw
