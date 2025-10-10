@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnCheckAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="1) Verify Admin Seeded" />
+
+            <Button
+                android:id="@+id/btnRegisterStudent"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="2) Register STUDENT" />
+
+            <Button
+                android:id="@+id/btnRegisterTutor"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="3) Register TUTOR" />
+
+            <Button
+                android:id="@+id/btnCheckDup"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="4) Check Duplicate Email (should be TRUE)" />
+
+            <Button
+                android:id="@+id/btnLoginOk"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="5) Verify Password (OK)" />
+
+            <Button
+                android:id="@+id/btnLoginFail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="6) Verify Password (FAIL)" />
+
+            <Button
+                android:id="@+id/btnReadRoles"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="7) Read Roles and Print" />
+
+            <Button
+                android:id="@+id/btnDumpAll"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="8) DUMP All Records" />
+
+            <Button
+                android:id="@+id/btnClearDb"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="9) CLEAR Database (DANGER)" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tvLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:background="#111111"
+        android:padding="10dp"
+        android:textColor="#EEEEEE"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        android:typeface="monospace" />
+</LinearLayout>
