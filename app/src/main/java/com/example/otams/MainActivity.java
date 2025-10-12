@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Register Tutor button
         btnRegisterTutor.setOnClickListener(v -> {
-            //runDbTask(this::registerTutor);
+            runDbTask(this::registerTutor);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 Intent intent = new Intent(MainActivity.this, TutorRegistrationActivity.class);
                 startActivity(intent);
