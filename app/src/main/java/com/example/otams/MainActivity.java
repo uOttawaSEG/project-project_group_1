@@ -2,6 +2,8 @@ package com.example.otams;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -68,12 +70,21 @@ public class MainActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.email);
         EditText password = findViewById(R.id.password);
 
-        // Spinner setupp
+        // Spinner setup
 
 
         // Register student button
         btnRegisterStudent.setOnClickListener(v -> runDbTask(this::registerStudent));
-        btnRegisterTutor.setOnClickListener(v -> runDbTask(this::registerTutor));
+
+        // Register Tutor button
+        btnRegisterTutor.setOnClickListener(v -> {
+            //runDbTask(this::registerTutor);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                Intent intent = new Intent(MainActivity.this, TutorRegistrationActivity.class);
+                startActivity(intent);
+            }, 500); // half-second delay
+        });
+
 
 
         // Login button
