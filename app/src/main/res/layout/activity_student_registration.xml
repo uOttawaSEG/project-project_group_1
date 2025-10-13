@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".StudentRegistrationActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -14,6 +14,17 @@
         android:paddingBottom="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvStudentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Registration"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp" />
 
         <EditText
             android:id="@+id/firstName"
@@ -48,7 +59,6 @@
         <EditText
             android:id="@+id/password"
             android:hint="@string/password"
-            android:inputType="textPassword"
             android:autofillHints="password"
             android:textColorHint="@android:color/black"
             android:minHeight="48dp"
@@ -75,13 +85,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <!-- Back Button -->
+        <Button
+            android:id="@+id/btnBackStudent"
+            android:text="Back"
+            android:minHeight="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+        <!-- Register Button -->
         <Button
             android:id="@+id/registerButton"
             android:text="@string/register"
             android:minHeight="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 </ScrollView>
