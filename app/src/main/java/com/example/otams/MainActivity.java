@@ -128,21 +128,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void registerStudent() {
-        String ts = new SimpleDateFormat("HHmmss", Locale.US).format(new Date());
-        lastStudentEmail = "student_" + ts + "@otams.ca";
-
-        Result<String> r = repo.registerStudent(
-                "Tom", "Lee", lastStudentEmail, studentPwd, "+1-555-0101", "Computer Science"
-        );
-
-        if (r.success) {
-            Log.i(TAG, r.data + ' ' + lastStudentEmail);
-        } else {
-            Log.e(TAG, "Error message: Something went wrong!");
-        }
-    }
-
     private void runDbTask(Runnable r) {
         io.execute(() -> {
             try {
