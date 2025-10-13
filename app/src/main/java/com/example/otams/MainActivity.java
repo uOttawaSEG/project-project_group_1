@@ -74,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Register student button
-        btnRegisterStudent.setOnClickListener(v -> runDbTask(this::registerStudent));
+        btnRegisterStudent.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, StudentRegistrationActivity.class);
+            startActivity(intent);
+        });
+
 
         // Register Tutor button
         btnRegisterTutor.setOnClickListener(v -> {

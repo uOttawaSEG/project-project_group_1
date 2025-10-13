@@ -59,7 +59,6 @@
         <EditText
             android:id="@+id/password"
             android:hint="@string/password"
-            android:inputType="textPassword"
             android:autofillHints="password"
             android:textColorHint="@android:color/black"
             android:minHeight="48dp"
