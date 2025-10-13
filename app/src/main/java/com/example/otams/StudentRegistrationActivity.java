@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.HashMap;
 
 
-public class MainActivity7 extends AppCompatActivity {
+public class StudentRegistrationActivity extends AppCompatActivity {
 
 
     EditText firstName, lastName, email, password, phone, program;
@@ -24,7 +24,7 @@ public class MainActivity7 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activitymain);
+        setContentView(R.layout.activity_student_registration);
 
 
         firstName = findViewById(R.id.firstName);

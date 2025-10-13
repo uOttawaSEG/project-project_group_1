@@ -78,11 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Register Tutor button
         btnRegisterTutor.setOnClickListener(v -> {
-            runDbTask(this::registerTutor);
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                Intent intent = new Intent(MainActivity.this, TutorRegistrationActivity.class);
-                startActivity(intent);
-            }, 500); // half-second delay
+            Intent intent = new Intent(MainActivity.this, TutorRegistrationActivity.class);
+            startActivity(intent);
         });
 
 
@@ -141,28 +138,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Error message: Something went wrong!");
         }
     }
-    private void registerTutor() {
-        String ts = new SimpleDateFormat("HHmmss", Locale.US).format(new Date());
-        lastTutorEmail = "tutor_" + ts + "@otams.ca";
-
-        Result<String> r = repo.registerTutor(
-                "Ann",
-                "Wang",
-                lastTutorEmail,
-                tutorPwd,
-                "+1-555-0102",
-                "MSc",
-                Arrays.asList("CSI2132", "MAT1322")
-        );
-
-        if (r.success) {
-            Log.i(TAG, r.data + ' ' + lastTutorEmail);
-        } else {
-            Log.e(TAG, "Error message: Something went wrong!");
-        }
-    }
-
-
 
     private void runDbTask(Runnable r) {
         io.execute(() -> {

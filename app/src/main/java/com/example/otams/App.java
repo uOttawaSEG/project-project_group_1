@@ -25,7 +25,6 @@ import com.example.otams.model.UserEntity;
 import com.example.otams.util.PasswordHasher;
 
 import java.util.UUID;
-
 public class App extends Application {
     private static AppDatabase DB;
 
