@@ -21,8 +21,11 @@ import com.example.otams.model.UserEntity;
 import com.example.otams.util.Converters;
 
 @Database(
-        entities = {UserEntity.class, StudentEntity.class, TutorEntity.class},
-        version = 1,
+        entities = {
+                UserEntity.class, StudentEntity.class, TutorEntity.class,
+                com.example.otams.model.RegistrationRequestEntity.class
+        },
+        version = 2, // new change
         exportSchema = false
 )
 @TypeConverters({Converters.class})
@@ -30,4 +33,25 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract StudentDao studentDao();
     public abstract TutorDao tutorDao();
+
+    //new addition:
+    public abstract com.example.otams.data.RegistrationRequestDao registrationRequestDao();
+
+    //new addition:
+    public static final androidx.room.migration.Migration MIGRATION_1_2 =
+            new androidx.room.migration.Migration(1, 2) {
+                @Override
+                public void migrate(@androidx.annotation.NonNull androidx.sqlite.db.SupportSQLiteDatabase db) {
+                    db.execSQL("CREATE TABLE IF NOT EXISTS `registration_requests` (" +
+                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                            "`email` TEXT NOT NULL, `firstName` TEXT NOT NULL, `lastName` TEXT NOT NULL, " +
+                            "`role` TEXT NOT NULL, `phone` TEXT, `programOfStudy` TEXT, `highestDegree` TEXT, " +
+                            "`coursesOffered` TEXT, " +
+                            "`passwordHash` TEXT NOT NULL, " +
+                            "`status` TEXT NOT NULL, `reviewedByAdminUserId` TEXT, `reviewedAtEpochMs` INTEGER, " +
+                            "`createdAtEpochMs` INTEGER NOT NULL)");
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_registration_requests_email` ON `registration_requests` (`email`)");
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_registration_requests_status` ON `registration_requests` (`status`)");
+                }
+            };
 }

@@ -8,6 +8,9 @@ package com.example.otams.util;
 
 import androidx.room.TypeConverter;
 
+import com.example.otams.model.UserRole;
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +39,25 @@ public class Converters {
             if (!v.isEmpty() && !out.contains(v)) out.add(v);
         }
         return out;
+    }
+    // new addition:
+    @TypeConverter
+    public static String fromRequestStatus(com.example.otams.model.RequestStatus s) {
+        return s == null ? null : s.name();
+    }
+
+    @TypeConverter
+    public static com.example.otams.model.RequestStatus toRequestStatus(String v) {
+        return v == null ? null : com.example.otams.model.RequestStatus.valueOf(v);
+    }
+
+    @TypeConverter
+    public static String fromUserRole(UserRole r) {
+        return r == null ? null : r.name();
+    }
+
+    @TypeConverter
+    public static UserRole toUserRole(String v) {
+        return v == null ? null : UserRole.valueOf(v);
     }
 }

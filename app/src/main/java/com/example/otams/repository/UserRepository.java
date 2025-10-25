@@ -26,6 +26,12 @@ import com.example.otams.model.TutorEntity;
 import com.example.otams.model.UserEntity;
 import com.example.otams.util.PasswordHasher;
 
+// new additions
+import com.example.otams.data.RegistrationRequestDao;
+import com.example.otams.model.RegistrationRequestEntity;
+import com.example.otams.model.RequestStatus;
+import com.example.otams.model.UserRole;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -36,11 +42,17 @@ public class UserRepository {
     private final StudentDao studentDao;
     private final TutorDao tutorDao;
 
+    // new additions
+    private final RegistrationRequestDao requestDao;
+
     public UserRepository(AppDatabase db) {
         this.db = db;
         this.userDao = db.userDao();
         this.studentDao = db.studentDao();
         this.tutorDao = db.tutorDao();
+
+        // new additions
+        this.requestDao = db.registrationRequestDao();
     }
 
     //Determine whether the email address is registered
@@ -82,6 +94,32 @@ public class UserRepository {
         }
     }
 
+  // new additions, student registration request
+  public Result<Long> createStudentRegistrationRequest(String first, String last, String email,
+                                                       String rawPassword, String phone,
+                                                       String programOfStudy) {
+      if (emailExists(email)) {
+          return Result.error("EMAIL_EXISTS", "This email is already registered");
+      }
+      try {
+          RegistrationRequestEntity r = new RegistrationRequestEntity();
+          r.email = email;
+          r.firstName = first;
+          r.lastName = last;
+          r.role = UserRole.STUDENT;
+          r.phone = phone;
+          r.programOfStudy = programOfStudy;
+          r.passwordHash = PasswordHasher.hash(rawPassword);
+          r.status = RequestStatus.PENDING;
+          r.createdAtEpochMs = System.currentTimeMillis();
+
+          long reqId = requestDao.insert(r);
+          return Result.ok(reqId);
+      } catch (Exception e) {
+          return Result.error("DB_ERROR", e.getMessage());
+      }
+  }
+
     //Tutor register
     public Result<String> registerTutor(String first, String last, String email,
                                         String rawPassword, String phone,
@@ -120,6 +158,36 @@ public class UserRepository {
         }
     }
 
+    // new additions, tutor registration request
+    public Result<Long> createTutorRegistrationRequest(String first, String last, String email,
+                                                       String rawPassword, String phone,
+                                                       String highestDegree, List<String> courses) {
+        if (emailExists(email)) {
+            return Result.error("EMAIL_EXISTS", "This email is already registered");
+        }
+        if (courses == null || courses.isEmpty()) {
+            return Result.error("VALIDATION", "At least one course is required");
+        }
+        try {
+            RegistrationRequestEntity r = new RegistrationRequestEntity();
+            r.email = email;
+            r.firstName = first;
+            r.lastName = last;
+            r.role = UserRole.TUTOR;
+            r.phone = phone;
+            r.highestDegree = highestDegree;
+            r.coursesOffered = courses;
+            r.passwordHash = PasswordHasher.hash(rawPassword);
+            r.status = RequestStatus.PENDING;
+            r.createdAtEpochMs = System.currentTimeMillis();
+
+            long reqId = requestDao.insert(r);
+            return Result.ok(reqId);
+        } catch (Exception e) {
+            return Result.error("DB_ERROR", e.getMessage());
+        }
+    }
+
     //Search and password verification
     @Nullable
     public UserEntity findByEmail(String email) {
@@ -141,5 +209,19 @@ public class UserRepository {
         private Result(boolean s, T d, String c, String m){ success=s; data=d; code=c; message=m; }
         public static <T> Result<T> ok(T data){ return new Result<>(true, data, null, null); }
         public static <T> Result<T> error(String code, String msg){ return new Result<>(false, null, code, msg); }
+    }
+
+    //new additions, Query/Update Status
+    @Nullable
+    public RequestStatus getRequestStatusByEmail(String email) {
+        return requestDao.getStatusByEmail(email);
+    }
+
+    public void markRequestApproved(long requestId, String adminUserId) {
+        requestDao.updateStatus(requestId, RequestStatus.APPROVED, adminUserId, System.currentTimeMillis());
+    }
+
+    public void markRequestRejected(long requestId, String adminUserId) {
+        requestDao.updateStatus(requestId, RequestStatus.REJECTED, adminUserId, System.currentTimeMillis());
     }
 }

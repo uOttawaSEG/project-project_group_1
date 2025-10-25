@@ -33,6 +33,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         DB = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "otams_db")
+                // new addition
+                .addMigrations(AppDatabase.MIGRATION_1_2)
 
                 .allowMainThreadQueries()
                 .build();
