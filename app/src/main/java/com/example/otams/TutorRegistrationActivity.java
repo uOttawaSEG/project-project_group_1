@@ -47,10 +47,8 @@ public class TutorRegistrationActivity extends AppCompatActivity {
         Button btnBack = findViewById(R.id.btnBack);
         Button btnSubmitTutor = findViewById(R.id.btnSubmitTutor);
 
-        // clicking back button brings you back
         btnBack.setOnClickListener(v -> finish());
 
-        // clean up on input fields when submitted to register
         btnSubmitTutor.setOnClickListener(v -> {
             String firstName = etFirstName.getText().toString().trim();
             String lastName = etLastName.getText().toString().trim();
@@ -60,37 +58,21 @@ public class TutorRegistrationActivity extends AppCompatActivity {
             String highestDegree = etHighestDegree.getText().toString().trim();
             String coursesStr = etCoursesOffered.getText().toString().trim();
 
-            // validate input fields using Validator in formValidation
             String err;
-            if ((err = Validation.checkName(firstName)) != null) {
-                showError(err); return;
-            }
-            if ((err = Validation.checkName(lastName)) != null) {
-                showError(err); return;
-            }
-            if ((err = Validation.checkEmail(email)) != null) {
-                showError(err); return;
-            }
-            if ((err = Validation.checkPassword(password)) != null) {
-                showError(err); return;
-            }
-            if ((err = Validation.checkPhone(phone)) != null) {
-                showError(err); return;
-            }
-            if ((err = Validation.checkHighestDegree(highestDegree)) != null) {
-                showError(err); return;
-            }
-            if ((err = Validation.checkCourse(coursesStr)) != null) {
-                showError(err); return;
-            }
+            if ((err = Validation.checkName(firstName)) != null) { showError(err); return; }
+            if ((err = Validation.checkName(lastName)) != null) { showError(err); return; }
+            if ((err = Validation.checkEmail(email)) != null) { showError(err); return; }
+            if ((err = Validation.checkPassword(password)) != null) { showError(err); return; }
+            if ((err = Validation.checkPhone(phone)) != null) { showError(err); return; }
+            if ((err = Validation.checkHighestDegree(highestDegree)) != null) { showError(err); return; }
+            if ((err = Validation.checkCourse(coursesStr)) != null) { showError(err); return; }
 
-            // split courses into a list (they're comma-separated)
             List<String> courses = Arrays.asList(coursesStr.split("\\s*,\\s*"));
 
-            // run DB task in background
             io.execute(() -> {
                 try {
-                    Result<String> result = repo.registerTutor(
+                    //  changed: save as registration request (pending)
+                    Result<Long> result = repo.createTutorRegistrationRequest(
                             firstName,
                             lastName,
                             email,
@@ -102,16 +84,23 @@ public class TutorRegistrationActivity extends AppCompatActivity {
 
                     runOnUiThread(() -> {
                         if (result.success) {
-                            Toast.makeText(this, "Tutor registered successfully!", Toast.LENGTH_LONG).show();
-                            finish(); // Return to main screen
+                            //  changed message
+                            Toast.makeText(this,
+                                    "Registration request submitted for approval!",
+                                    Toast.LENGTH_LONG).show();
+                            finish();
                         } else {
-                            Toast.makeText(this, "Registration failed: " + result.data, Toast.LENGTH_LONG).show();
+                            Toast.makeText(this,
+                                    "Registration failed: " + result.message,
+                                    Toast.LENGTH_LONG).show();
                         }
                     });
                 } catch (Exception e) {
                     Log.e(TAG, "Error registering tutor", e);
                     runOnUiThread(() ->
-                            Toast.makeText(this, "An error occurred during registration.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this,
+                                    "An error occurred during registration.",
+                                    Toast.LENGTH_LONG).show()
                     );
                 }
             });
