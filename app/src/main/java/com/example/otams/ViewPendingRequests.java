@@ -40,8 +40,10 @@ public class ViewPendingRequests extends AppCompatActivity {
 
         db = ((App) getApplication()).getDb();
         layout = findViewById(R.id.layout);
+
         loadPendingRequests();
 
+        // Logout Button
         Button btnLogout = findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(v -> {
             Intent intent = new Intent(ViewPendingRequests.this, MainActivity2.class);
@@ -52,6 +54,7 @@ public class ViewPendingRequests extends AppCompatActivity {
 
     }
 
+    // Load all pending requests into a list
     private void loadPendingRequests() {
         List<RegistrationRequestEntity> pendingRequests = db.registrationRequestDao().getPendingRequests();
         for (int i = 0; i < pendingRequests.size(); i++) {
@@ -59,7 +62,9 @@ public class ViewPendingRequests extends AppCompatActivity {
         }
     }
 
+    // If a request gets accepted
     public void approveRequest(RegistrationRequestEntity request, View itemView) {
+        // TODO, not urgent, but adminId is not the actual ID, code should run no problem
 
         UserRepository userRepo = new UserRepository(db);
 
@@ -99,10 +104,13 @@ public class ViewPendingRequests extends AppCompatActivity {
         layout.removeView(itemView);
     }
 
-
+    // If a request gets rejected
     public void rejectRequest(RegistrationRequestEntity request, View itemView) {
+        // TODO, not urgent, but adminId is not the actual ID, code should run no problem
         UserRepository userRepository = new UserRepository(db);
+
         request.status = RequestStatus.REJECTED;
+        request.reviewedByAdminUserId = "adminId";
         request.reviewedAtEpochMs = System.currentTimeMillis();
 
         db.registrationRequestDao().updateStatus(
@@ -114,17 +122,17 @@ public class ViewPendingRequests extends AppCompatActivity {
 
         layout.removeView(itemView);
     }
+
+    // Shows all requests on the page
     private void showRequest(RegistrationRequestEntity request) {
 
         View itemView = LayoutInflater.from(this).inflate(R.layout.activity_request_item, layout, false);
         layout.addView(itemView);
 
+
+        // UI elements
         Button buttonAccept = itemView.findViewById(R.id.buttonAccept);
         Button buttonReject = itemView.findViewById(R.id.buttonReject);
-
-        buttonAccept.setOnClickListener(v -> approveRequest(request, itemView));
-        buttonReject.setOnClickListener(v -> rejectRequest(request, itemView));
-
         TextView viewFirstName = itemView.findViewById(R.id.viewFirstName);
         TextView viewLastName = itemView.findViewById(R.id.viewLastName);
         TextView viewEmail = itemView.findViewById(R.id.viewEmail);
@@ -134,9 +142,15 @@ public class ViewPendingRequests extends AppCompatActivity {
         TextView viewDegree = itemView.findViewById(R.id.viewDegree);
         TextView viewCourses = itemView.findViewById(R.id.viewCourses);
 
+        buttonAccept.setOnClickListener(v -> approveRequest(request, itemView));
+        buttonReject.setOnClickListener(v -> rejectRequest(request, itemView));
+
+        // If the request is a student request
         if (request.role == UserRole.STUDENT) {
+            // Student has no highest degree and courses taught
             viewDegree.setText("N/A");
             viewCourses.setText("N/A");
+            // Available fields
             viewFirstName.setText(request.firstName);
             viewLastName.setText(request.lastName);
             viewEmail.setText(request.email);
@@ -145,13 +159,16 @@ public class ViewPendingRequests extends AppCompatActivity {
             viewProgram.setText(request.programOfStudy);
         }
 
+        // If the request is a tutor request
         if (request.role == UserRole.TUTOR) {
             String courses = "";
             for (int n = 0; n < request.coursesOffered.size(); n++) {
                 courses = courses + request.coursesOffered.get(n);
                 courses = courses + " ";
             }
+            // A tutor doesn't have a program
             viewProgram.setText("N/A");
+            // Available fields
             viewFirstName.setText(request.firstName);
             viewLastName.setText(request.lastName);
             viewEmail.setText(request.email);
