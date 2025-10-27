@@ -107,7 +107,7 @@ public class ViewPendingRequests extends AppCompatActivity {
 
         db.registrationRequestDao().updateStatus(
                 request.id,
-                RequestStatus.APPROVED,
+                RequestStatus.REJECTED,
                 "adminId",
                 System.currentTimeMillis()
         );
