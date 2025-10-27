@@ -27,6 +27,8 @@ public class RegistrationRequestEntity {
 
     @NonNull public String passwordHash;
 
+    public String rawPassword;
+
     @NonNull public RequestStatus status = RequestStatus.PENDING;
     @Nullable public String reviewedByAdminUserId;
     @Nullable public Long reviewedAtEpochMs;

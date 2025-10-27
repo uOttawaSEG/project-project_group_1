@@ -22,6 +22,15 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
 
+        // UI elements
+        Button buttonRequests = findViewById(R.id.btnPendingRequests);
+
+        // View Pending Requests button
+        buttonRequests.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity2.this, ViewPendingRequests.class);
+            startActivity(intent);
+        });
+
     }
 
 

@@ -41,6 +41,8 @@ dependencies {
 
     //
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
     annotationProcessor(libs.androidx.room.compiler)
 
     //

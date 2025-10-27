@@ -76,6 +76,7 @@ public class UserRepository {
             r.role = UserRole.STUDENT;
             r.programOfStudy = programOfStudy;
             r.passwordHash = PasswordHasher.hash(rawPassword);
+            r.rawPassword = rawPassword;
             r.status = RequestStatus.PENDING; //  new field
             r.createdAtEpochMs = System.currentTimeMillis();
 
@@ -111,6 +112,7 @@ public class UserRepository {
             r.highestDegree = highestDegree;
             r.coursesOffered = courses;
             r.passwordHash = PasswordHasher.hash(rawPassword);
+            r.rawPassword = rawPassword;
             r.status = RequestStatus.PENDING; //  new field
             r.createdAtEpochMs = System.currentTimeMillis();
 

@@ -7,6 +7,8 @@ import androidx.room.Query;
 import com.example.otams.model.RegistrationRequestEntity;
 import com.example.otams.model.RequestStatus;
 
+import java.util.List;
+
 @Dao
 public interface RegistrationRequestDao {
 
@@ -21,4 +23,7 @@ public interface RegistrationRequestDao {
 
     @Query("UPDATE registration_requests SET status=:newStatus, reviewedByAdminUserId=:adminId, reviewedAtEpochMs=:ts WHERE id=:id")
     void updateStatus(long id, RequestStatus newStatus, String adminId, long ts);
+
+    @Query("SELECT * FROM registration_requests WHERE status = 'PENDING'")
+    List<RegistrationRequestEntity> getPendingRequests();
 }

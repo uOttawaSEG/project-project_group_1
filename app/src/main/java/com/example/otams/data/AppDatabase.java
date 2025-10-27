@@ -25,7 +25,7 @@ import com.example.otams.util.Converters;
                 UserEntity.class, StudentEntity.class, TutorEntity.class,
                 com.example.otams.model.RegistrationRequestEntity.class
         },
-        version = 2, // new change
+        version = 3, // Changed from 2 to 3
         exportSchema = false
 )
 @TypeConverters({Converters.class})
@@ -52,6 +52,15 @@ public abstract class AppDatabase extends RoomDatabase {
                             "`createdAtEpochMs` INTEGER NOT NULL)");
                     db.execSQL("CREATE INDEX IF NOT EXISTS `index_registration_requests_email` ON `registration_requests` (`email`)");
                     db.execSQL("CREATE INDEX IF NOT EXISTS `index_registration_requests_status` ON `registration_requests` (`status`)");
+                }
+            };
+
+    public static final androidx.room.migration.Migration MIGRATION_2_3 =
+            new androidx.room.migration.Migration(2, 3) {
+                @Override
+                public void migrate(@androidx.annotation.NonNull androidx.sqlite.db.SupportSQLiteDatabase db) {
+                    // Add the new rawPassword column
+                    db.execSQL("ALTER TABLE registration_requests ADD COLUMN rawPassword TEXT");
                 }
             };
 }
