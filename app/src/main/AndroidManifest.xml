@@ -15,7 +15,6 @@
         <activity
             android:name=".RequestViewItem"
             android:exported="false" />
-
         <activity
             android:name=".util.RequestItem"
             android:exported="false" />
@@ -31,6 +30,13 @@
         <activity
             android:name=".ViewPendingRequests"
             android:exported="false" /> <!-- Main activities -->
+        <activity
+            android:name=".ViewRejectedRequests"
+            android:exported="false" /> <!-- Main activities -->
+        <activity
+            android:name=".RejectedRequestDetails"
+            android:exported="false" /> <!-- Main activities -->
+
         <activity android:name=".MainActivity4" />
         <activity android:name=".MainActivity3" />
         <activity android:name=".MainActivity2" />

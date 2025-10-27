@@ -26,4 +26,7 @@ public interface RegistrationRequestDao {
 
     @Query("SELECT * FROM registration_requests WHERE status = 'PENDING'")
     List<RegistrationRequestEntity> getPendingRequests();
+
+    @Query("SELECT * FROM registration_requests WHERE status = 'REJECTED'")
+    List<RegistrationRequestEntity> getRejectedRequests();
 }

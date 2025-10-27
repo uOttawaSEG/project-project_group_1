@@ -31,6 +31,12 @@ public class MainActivity2 extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button btnRejected = findViewById(R.id.btnRejected);
+        btnRejected.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity2.this, ViewRejectedRequests.class);
+            startActivity(intent);
+        });
+
     }
 
 
