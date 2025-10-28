@@ -18,6 +18,7 @@ import com.example.otams.data.AppDatabase;
 import com.example.otams.model.RegistrationRequestEntity;
 import com.example.otams.model.RequestStatus;
 import com.example.otams.model.UserRole;
+import com.example.otams.repository.UserRepository;
 
 import java.util.List;
 
@@ -74,19 +75,53 @@ public class ViewRejectedRequests extends AppCompatActivity {
         email.setText(request.email);
         role.setText(request.role == UserRole.STUDENT ? "Student" : "Tutor");
 
+        Button btnReapprove = itemView.findViewById(R.id.btnReapprove);
+        btnReapprove.setOnClickListener(v -> reacceptRequest(request, itemView));
+
         details.setOnClickListener(v -> {
             Intent intent = new Intent(ViewRejectedRequests.this, RejectedRequestDetails.class);
             intent.putExtra("requestId", request.id);
             startActivity(intent);
         });
+    }
 
+    public void reacceptRequest(RegistrationRequestEntity request, View itemView) {
 
+        UserRepository userRepo = new UserRepository(db);
+        request.status = RequestStatus.APPROVED;
+        request.reviewedByAdminUserId = "adminId";
+        request.reviewedAtEpochMs = System.currentTimeMillis();
 
+        db.registrationRequestDao().updateStatus(
+                request.id,
+                RequestStatus.APPROVED,
+                "adminId",
+                System.currentTimeMillis()
+        );
 
+        if (request.role == UserRole.STUDENT) {
+            UserRepository.Result<String> result = userRepo.registerStudent(
+                    request.firstName,
+                    request.lastName,
+                    request.email,
+                    request.rawPassword,
+                    request.phone,
+                    request.programOfStudy
+            );
+        }
 
-
-
-
+        if (request.role == UserRole.TUTOR) {
+            UserRepository.Result<String> result = userRepo.registerTutor(
+                    request.firstName,
+                    request.lastName,
+                    request.email,
+                    request.rawPassword,
+                    request.phone,
+                    request.highestDegree,
+                    request.coursesOffered
+            );
+        }
+        layout.removeView(itemView);
     }
 //    private void showRejectedRequest(RegistrationRequestEntity request) {
 //        View itemView = LayoutInflater.from(this)
