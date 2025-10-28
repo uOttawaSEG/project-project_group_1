@@ -69,7 +69,6 @@ public class ViewRejectedRequests extends AppCompatActivity {
         TextView name = itemView.findViewById(R.id.textName);
         TextView email = itemView.findViewById(R.id.textEmail);
         TextView role = itemView.findViewById(R.id.textRole);
-        Button details = itemView.findViewById(R.id.buttonDetails);
 
         name.setText(request.firstName + " " + request.lastName);
         email.setText(request.email);
@@ -78,11 +77,6 @@ public class ViewRejectedRequests extends AppCompatActivity {
         Button btnReapprove = itemView.findViewById(R.id.btnReapprove);
         btnReapprove.setOnClickListener(v -> reacceptRequest(request, itemView));
 
-        details.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewRejectedRequests.this, RejectedRequestDetails.class);
-            intent.putExtra("requestId", request.id);
-            startActivity(intent);
-        });
     }
 
     public void reacceptRequest(RegistrationRequestEntity request, View itemView) {
