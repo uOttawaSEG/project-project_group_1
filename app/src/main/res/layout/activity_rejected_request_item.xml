@@ -39,11 +39,10 @@
             android:layout_height="wrap_content" />
 
         <Button
-            android:id="@+id/buttonDetails"
-            android:text="View Details"
+            android:id="@+id/btnReapprove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:text="Click to reapprove" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
