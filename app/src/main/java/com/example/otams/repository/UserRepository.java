@@ -1,17 +1,13 @@
 /**
  * UserRepository coordinates user-related data operations across multiple DAOs.
- * It implements high-level use cases such as registering students/tutors,
- * checking email availability, loading users by email, and verifying passwords.
  *
- * Internally, it:
- * - Hashes passwords (never stores plaintext) before persisting UserEntity.
- * - Uses Room transactions to atomically insert into users + role-specific tables
- *   (students or tutors) so the database remains consistent.
- * - Wraps results in a small Result<T> type with error codes for UI handling.
- *
- * Typical usage:
- *   Result<String> r = repo.registerStudent(...);
- *   if (r.success) { String userId = r.data; } else { show(r.code, r.message); }
+ * ────────────  SUMMARY OF CHANGES FOR DELIVERABLE 2  ────────────
+ *  • Added RegistrationRequestDao & model imports
+ *  • Registration now saves new Students/Tutors as "pending" requests
+ *    instead of immediately creating real UserEntity entries.
+ *  • Added helper methods to query/update registration request status.
+ *  • Existing registerStudent()/registerTutor() kept for later (when admin approves).
+ * ─────────────────────────────────────────────────────────────────
  */
 package com.example.otams.repository;
 
@@ -26,7 +22,7 @@ import com.example.otams.model.TutorEntity;
 import com.example.otams.model.UserEntity;
 import com.example.otams.util.PasswordHasher;
 
-// new additions
+//  NEW ADDITIONS FOR DELIVERABLE 2
 import com.example.otams.data.RegistrationRequestDao;
 import com.example.otams.model.RegistrationRequestEntity;
 import com.example.otams.model.RequestStatus;
@@ -42,7 +38,7 @@ public class UserRepository {
     private final StudentDao studentDao;
     private final TutorDao tutorDao;
 
-    // new additions
+    //  NEW DAO for registration requests
     private final RegistrationRequestDao requestDao;
 
     public UserRepository(AppDatabase db) {
@@ -51,16 +47,85 @@ public class UserRepository {
         this.studentDao = db.studentDao();
         this.tutorDao = db.tutorDao();
 
-        // new additions
+        //  NEW INITIALIZATION
         this.requestDao = db.registrationRequestDao();
     }
 
-    //Determine whether the email address is registered
+    /** Checks whether a user email already exists in main users table. */
     public boolean emailExists(String email) {
         return userDao.emailExists(email);
     }
 
-    //Student register
+    
+    //  STUDENT REGISTRATION REQUEST  
+    
+    public Result<Long> createStudentRegistrationRequest(
+            String first, String last, String email,
+            String rawPassword, String phone, String programOfStudy) {
+
+        if (emailExists(email)) {
+            return Result.error("EMAIL_EXISTS", "This email is already registered");
+        }
+
+        try {
+            RegistrationRequestEntity r = new RegistrationRequestEntity();
+            r.firstName = first;
+            r.lastName = last;
+            r.email = email;
+            r.phone = phone;
+            r.role = UserRole.STUDENT;
+            r.programOfStudy = programOfStudy;
+            r.passwordHash = PasswordHasher.hash(rawPassword);
+            r.rawPassword = rawPassword;
+            r.status = RequestStatus.PENDING; //  new field
+            r.createdAtEpochMs = System.currentTimeMillis();
+
+            long reqId = requestDao.insert(r);
+            return Result.ok(reqId);
+        } catch (Exception e) {
+            return Result.error("DB_ERROR", e.getMessage());
+        }
+    }
+
+    
+    //  TUTOR REGISTRATION REQUEST 
+    
+    public Result<Long> createTutorRegistrationRequest(
+            String first, String last, String email,
+            String rawPassword, String phone,
+            String highestDegree, List<String> courses) {
+
+        if (emailExists(email)) {
+            return Result.error("EMAIL_EXISTS", "This email is already registered");
+        }
+        if (courses == null || courses.isEmpty()) {
+            return Result.error("VALIDATION", "At least one course is required");
+        }
+
+        try {
+            RegistrationRequestEntity r = new RegistrationRequestEntity();
+            r.firstName = first;
+            r.lastName = last;
+            r.email = email;
+            r.phone = phone;
+            r.role = UserRole.TUTOR;
+            r.highestDegree = highestDegree;
+            r.coursesOffered = courses;
+            r.passwordHash = PasswordHasher.hash(rawPassword);
+            r.rawPassword = rawPassword;
+            r.status = RequestStatus.PENDING; //  new field
+            r.createdAtEpochMs = System.currentTimeMillis();
+
+            long reqId = requestDao.insert(r);
+            return Result.ok(reqId);
+        } catch (Exception e) {
+            return Result.error("DB_ERROR", e.getMessage());
+        }
+    }
+
+    
+    //  ORIGINAL FULL REGISTRATION FOR ADMIN APPROVAL phase
+    
     public Result<String> registerStudent(String first, String last, String email,
                                           String rawPassword, String phone,
                                           String programOfStudy) {
@@ -94,33 +159,6 @@ public class UserRepository {
         }
     }
 
-  // new additions, student registration request
-  public Result<Long> createStudentRegistrationRequest(String first, String last, String email,
-                                                       String rawPassword, String phone,
-                                                       String programOfStudy) {
-      if (emailExists(email)) {
-          return Result.error("EMAIL_EXISTS", "This email is already registered");
-      }
-      try {
-          RegistrationRequestEntity r = new RegistrationRequestEntity();
-          r.email = email;
-          r.firstName = first;
-          r.lastName = last;
-          r.role = UserRole.STUDENT;
-          r.phone = phone;
-          r.programOfStudy = programOfStudy;
-          r.passwordHash = PasswordHasher.hash(rawPassword);
-          r.status = RequestStatus.PENDING;
-          r.createdAtEpochMs = System.currentTimeMillis();
-
-          long reqId = requestDao.insert(r);
-          return Result.ok(reqId);
-      } catch (Exception e) {
-          return Result.error("DB_ERROR", e.getMessage());
-      }
-  }
-
-    //Tutor register
     public Result<String> registerTutor(String first, String last, String email,
                                         String rawPassword, String phone,
                                         String highestDegree, List<String> courses) {
@@ -158,37 +196,9 @@ public class UserRepository {
         }
     }
 
-    // new additions, tutor registration request
-    public Result<Long> createTutorRegistrationRequest(String first, String last, String email,
-                                                       String rawPassword, String phone,
-                                                       String highestDegree, List<String> courses) {
-        if (emailExists(email)) {
-            return Result.error("EMAIL_EXISTS", "This email is already registered");
-        }
-        if (courses == null || courses.isEmpty()) {
-            return Result.error("VALIDATION", "At least one course is required");
-        }
-        try {
-            RegistrationRequestEntity r = new RegistrationRequestEntity();
-            r.email = email;
-            r.firstName = first;
-            r.lastName = last;
-            r.role = UserRole.TUTOR;
-            r.phone = phone;
-            r.highestDegree = highestDegree;
-            r.coursesOffered = courses;
-            r.passwordHash = PasswordHasher.hash(rawPassword);
-            r.status = RequestStatus.PENDING;
-            r.createdAtEpochMs = System.currentTimeMillis();
-
-            long reqId = requestDao.insert(r);
-            return Result.ok(reqId);
-        } catch (Exception e) {
-            return Result.error("DB_ERROR", e.getMessage());
-        }
-    }
-
-    //Search and password verification
+    
+    //  LOGIN & PASSWORD VERIFICATION
+    
     @Nullable
     public UserEntity findByEmail(String email) {
         return userDao.findByEmail(email);
@@ -196,32 +206,50 @@ public class UserRepository {
 
     public boolean verifyPassword(String email, String rawPassword) {
         UserEntity u = userDao.findByEmail(email);
-        if (u == null) return false;
-        return PasswordHasher.matches(rawPassword, u.passwordHash);
+        return (u != null && PasswordHasher.matches(rawPassword, u.passwordHash));
     }
 
-
-    public static class Result<T> {
-        public final boolean success;
-        public final T data;
-        public final String code;
-        public final String message;
-        private Result(boolean s, T d, String c, String m){ success=s; data=d; code=c; message=m; }
-        public static <T> Result<T> ok(T data){ return new Result<>(true, data, null, null); }
-        public static <T> Result<T> error(String code, String msg){ return new Result<>(false, null, code, msg); }
-    }
-
-    //new additions, Query/Update Status
+    
+    //  REQUEST STATUS QUERIES / ADMIN UPDATES (Deliverable 2)
+    
     @Nullable
     public RequestStatus getRequestStatusByEmail(String email) {
         return requestDao.getStatusByEmail(email);
     }
 
     public void markRequestApproved(long requestId, String adminUserId) {
-        requestDao.updateStatus(requestId, RequestStatus.APPROVED, adminUserId, System.currentTimeMillis());
+        requestDao.updateStatus(
+                requestId,
+                RequestStatus.APPROVED,
+                adminUserId,
+                System.currentTimeMillis());
     }
 
     public void markRequestRejected(long requestId, String adminUserId) {
-        requestDao.updateStatus(requestId, RequestStatus.REJECTED, adminUserId, System.currentTimeMillis());
+        requestDao.updateStatus(
+                requestId,
+                RequestStatus.REJECTED,
+                adminUserId,
+                System.currentTimeMillis());
+    }
+
+    
+    //  GENERIC RESULT WRAPPER
+    
+    public static class Result<T> {
+        public final boolean success;
+        public final T data;
+        public final String code;
+        public final String message;
+
+        private Result(boolean s, T d, String c, String m) {
+            success = s; data = d; code = c; message = m;
+        }
+        public static <T> Result<T> ok(T data) {
+            return new Result<>(true, data, null, null);
+        }
+        public static <T> Result<T> error(String code, String msg) {
+            return new Result<>(false, null, code, msg);
+        }
     }
 }

@@ -22,6 +22,21 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
 
+        // UI elements
+        Button buttonRequests = findViewById(R.id.btnPendingRequests);
+
+        // View Pending Requests button
+        buttonRequests.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity2.this, ViewPendingRequests.class);
+            startActivity(intent);
+        });
+
+        Button btnRejected = findViewById(R.id.btnRejected);
+        btnRejected.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity2.this, ViewRejectedRequests.class);
+            startActivity(intent);
+        });
+
     }
 
 

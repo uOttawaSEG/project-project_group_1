@@ -55,15 +55,22 @@ public class StudentRegistrationActivity extends AppCompatActivity {
             }
 
             io.execute(() -> {
-                Result<String> result = repo.registerStudent(fn, ln, em, pw, ph, prog);
+                //  Save registration as a pending request, not a full user account
+                Result<Long> result = repo.createStudentRegistrationRequest(fn, ln, em, pw, ph, prog);
+
                 runOnUiThread(() -> {
                     if (result.success) {
-                        Toast.makeText(this, "Student registered successfully!", Toast.LENGTH_LONG).show();
-                        Log.i(TAG, "Registered student: " + em);
-                        finish(); // go back to MainActivity
+                        //   Reflect that it’s awaiting admin approval
+                        Toast.makeText(this, 
+                            "Registration request submitted for approval!", 
+                            Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "Student registration request submitted: " + em);
+                        finish(); // go back to main screen
                     } else {
-                        Toast.makeText(this, "Registration failed: " + result.data, Toast.LENGTH_LONG).show();
-                        Log.e(TAG, "Registration failed for " + em);
+                        Toast.makeText(this, 
+                            "Registration failed: " + result.message, 
+                            Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "Registration failed for " + em + ": " + result.message);
                     }
                 });
             });
