@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Logout"
+            android:text="Back"
             android:layout_gravity="end"/>
 
 
