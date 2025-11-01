@@ -15,17 +15,30 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import androidx.annotation.NonNull;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
 import com.example.otams.model.StudentEntity;
 import com.example.otams.model.TutorEntity;
 import com.example.otams.model.UserEntity;
 import com.example.otams.util.Converters;
 
+import com.example.otams.model.RegistrationRequestEntity;
+import com.example.otams.model.TutorAvailabilityEntity;
+
+
+
 @Database(
         entities = {
-                UserEntity.class, StudentEntity.class, TutorEntity.class,
-                com.example.otams.model.RegistrationRequestEntity.class
+                UserEntity.class,
+                StudentEntity.class,
+                TutorEntity.class,
+                RegistrationRequestEntity.class,
+                TutorAvailabilityEntity.class
+
         },
-        version = 3, // Changed from 2 to 3
+        version = 4, // Changed from 3 to 4
         exportSchema = false
 )
 @TypeConverters({Converters.class})
@@ -34,10 +47,11 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract StudentDao studentDao();
     public abstract TutorDao tutorDao();
 
-    //new addition:
     public abstract com.example.otams.data.RegistrationRequestDao registrationRequestDao();
+    // deliverable 3
+    public abstract TutorAvailabilityDao tutorAvailabilityDao();
 
-    //new addition:
+
     public static final androidx.room.migration.Migration MIGRATION_1_2 =
             new androidx.room.migration.Migration(1, 2) {
                 @Override
@@ -61,6 +75,25 @@ public abstract class AppDatabase extends RoomDatabase {
                 public void migrate(@androidx.annotation.NonNull androidx.sqlite.db.SupportSQLiteDatabase db) {
                     // Add the new rawPassword column
                     db.execSQL("ALTER TABLE registration_requests ADD COLUMN rawPassword TEXT");
+                }
+            };
+
+    // deliverable 3
+    public static final Migration MIGRATION_3_4 =
+            new Migration(3, 4) {
+                @Override
+                public void migrate(@NonNull SupportSQLiteDatabase db) {
+                    db.execSQL(
+                            "CREATE TABLE IF NOT EXISTS `tutor_availability` (" +
+                                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                                    "`tutorEmail` TEXT NOT NULL, " +
+                                    "`date` TEXT NOT NULL, " +
+                                    "`startTime` TEXT NOT NULL, " +
+                                    "`endTime` TEXT NOT NULL, " +
+                                    "`autoApprove` INTEGER NOT NULL DEFAULT 0" +
+                                    ")"
+                    );
+                    db.execSQL("CREATE INDEX IF NOT EXISTS `index_tutor_availability_tutorEmail` ON `tutor_availability` (`tutorEmail`)");
                 }
             };
 }

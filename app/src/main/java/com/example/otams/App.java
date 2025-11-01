@@ -25,6 +25,7 @@ import com.example.otams.model.UserEntity;
 import com.example.otams.util.PasswordHasher;
 
 import java.util.UUID;
+
 public class App extends Application {
     private static AppDatabase DB;
 
@@ -32,11 +33,20 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        DB = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "otams_db")
-                // new addition
-                .addMigrations(AppDatabase.MIGRATION_1_2, AppDatabase.MIGRATION_2_3)
+        DB = Room.databaseBuilder(
+                            getApplicationContext(),
+                            AppDatabase.class,
+                            "otams_db"
+                )
 
+                // deliverable 3
                 .allowMainThreadQueries()
+                .addMigrations(
+                        AppDatabase.MIGRATION_1_2,
+                        AppDatabase.MIGRATION_2_3,
+                        AppDatabase.MIGRATION_3_4
+                )
+
                 .build();
         seedAdminIfNeeded();
     }

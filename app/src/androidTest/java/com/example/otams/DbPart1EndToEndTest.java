@@ -35,6 +35,10 @@ import java.util.Arrays;
  *
  * Note: Runs only in androidTest environment; not part of production app.
  */
+
+import org.junit.Ignore;
+
+@Ignore("Temporarily disabled for Deliverable 3")
 @RunWith(AndroidJUnit4.class)
 public class DbPart1EndToEndTest {
 

@@ -1,0 +1,28 @@
+package com.example.otams.model;
+
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "tutor_availability")
+public class TutorAvailabilityEntity {
+
+    @PrimaryKey(autoGenerate = true)
+    public long id;
+
+    @NonNull
+    public String tutorEmail;
+
+    //YYYY-MM-DD eg: 2025-01-01
+    @NonNull
+    public String date;
+
+    // 30min
+    @NonNull
+    public String startTime;
+
+    @NonNull
+    public String endTime;
+
+    public boolean autoApprove;
+}
