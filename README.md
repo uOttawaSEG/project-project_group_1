@@ -21,7 +21,6 @@ Tutors can now add, view, and delete their available time slots.
 All data is stored in the Room database (version 4).
 
 New Files Added
-File	Purpose
 TutorAvailabilityEntity.java	Defines the tutor availability table (date, start, end, autoApprove).
 TutorAvailabilityDao.java	Handles insert, delete, and overlap checks.
 TutorAvailabilityActivity.java	Page where tutors manage their slots.
@@ -30,7 +29,6 @@ activity_tutor_availability.xml	Layout for the availability screen.
 item_tutor_availability.xml	Layout for a single slot row.
 
 Modified Files
-File	Change
 AppDatabase.java	Added TutorAvailabilityEntity, DAO, and MIGRATION_3_4.
 App.java	Registered new migration.
 MainActivity3.java	Added “Manage Availability” button to open the new page.
