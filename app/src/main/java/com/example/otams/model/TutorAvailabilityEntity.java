@@ -1,6 +1,7 @@
 package com.example.otams.model;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -25,4 +26,13 @@ public class TutorAvailabilityEntity {
     public String endTime;
 
     public boolean autoApprove;
+
+
+    // NONE, PENDING, ACCEPTED, REJECTED, CANCELLED, EXPIRED
+    @NonNull
+    public String requestStatus = "NONE";
+
+    @Nullable
+    public String studentEmail;
+
 }

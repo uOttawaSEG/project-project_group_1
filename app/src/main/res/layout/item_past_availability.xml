@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardPast"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,8 +14,9 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+
         <TextView
-            android:id="@+id/textFirstName"
+            android:id="@+id/txtFName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="First Name"
@@ -24,12 +24,12 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewFirstName"
+            android:id="@+id/pastFName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/textLastName"
+            android:id="@+id/txtLName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Last Name"
@@ -37,12 +37,12 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewLastName"
+            android:id="@+id/pastLName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/textEmail"
+            android:id="@+id/txtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email"
@@ -50,85 +50,61 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewEmail"
+            android:id="@+id/pastEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/textRole"
+            android:id="@+id/txtDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Role"
+            android:text="Date"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewRole"
+            android:id="@+id/pastDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/textPhone"
+            android:id="@+id/txtTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phone"
+            android:text="Time"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewPhone"
+            android:id="@+id/pastTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/textProgram"
+            android:id="@+id/txtStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Program of Study"
+            android:text="Session Status"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewProgram"
+            android:id="@+id/pastStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/textDegree"
+            android:id="@+id/txtCourse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Highest Degree"
+            android:text="Course"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/viewDegree"
+            android:id="@+id/pastCourse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/textCourses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Courses Offered"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/viewCourses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/buttonAccept"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Accept" />
-
-        <Button
-            android:id="@+id/buttonReject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reject" />
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

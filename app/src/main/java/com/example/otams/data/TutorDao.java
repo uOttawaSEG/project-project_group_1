@@ -23,4 +23,9 @@ public interface TutorDao {
 
     @Query("SELECT * FROM tutors ORDER BY userId")
     List<TutorEntity> getAllTutors();
+
+    @Query("SELECT t.* FROM tutors t " +
+            "INNER JOIN users u ON u.id = t.userId " +
+            "WHERE u.email = :email LIMIT 1")
+    TutorEntity findByEmail(String email);
 }
