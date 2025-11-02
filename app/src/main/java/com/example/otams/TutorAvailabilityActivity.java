@@ -85,13 +85,6 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
                 (view, year, month, dayOfMonth) -> {
                     String dateStr = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
 
-                    Calendar picked = Calendar.getInstance();
-                    picked.set(year, month, dayOfMonth, 0, 0, 0);
-                    if (picked.before(Calendar.getInstance())) {
-                        Toast.makeText(this, "Date already passed", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
                     // start time
                     TimePickerDialog startTimeDialog = new TimePickerDialog(
                             this,
@@ -105,6 +98,14 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
                                         (view2, endHour, endMinute) -> {
                                             int endMin = to30(endMinute);
                                             final String endStr = String.format("%02d:%02d", endHour, endMin);
+
+                                            Calendar selectedTime = Calendar.getInstance();
+                                            selectedTime.set(year, month, dayOfMonth, hourOfDay, startMin, 0);
+
+                                            if (selectedTime.before(now)) {
+                                                Toast.makeText(this, "Selected date/time has already passed", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
 
                                             if (endStr.compareTo(startStr) <= 0) {
                                                 Toast.makeText(this, "End must be after start", Toast.LENGTH_SHORT).show();
