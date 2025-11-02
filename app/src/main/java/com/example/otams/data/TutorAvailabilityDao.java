@@ -13,6 +13,20 @@ import java.util.List;
 @Dao
 public interface TutorAvailabilityDao {
 
+    // Past sessions
+    @Query("SELECT * FROM tutor_availability " +
+            "WHERE tutorEmail = :email " +
+            "AND datetime(date || ' ' || endTime) < datetime('now','localtime') " +
+            "ORDER BY date DESC, endTime DESC")
+    List<TutorAvailabilityEntity> getPastAvailabilities(String email);
+
+    // Current and future sessions
+    @Query("SELECT * FROM tutor_availability " +
+            "WHERE tutorEmail = :email " +
+            "AND datetime(date || ' ' || endTime) >= datetime('now','localtime') " +
+            "ORDER BY date, endTime")
+    List<TutorAvailabilityEntity> getFutureAvailabilities(String email);
+
     // Get all time periods of a tutor
     @Query("SELECT * FROM tutor_availability " +
             "WHERE tutorEmail = :email " +

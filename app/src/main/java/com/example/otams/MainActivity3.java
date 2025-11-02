@@ -27,14 +27,10 @@ public class MainActivity3 extends AppCompatActivity {
         });
 
         Button btnManageAvailability = findViewById(R.id.btnManageAvailability);
-        btnManageAvailability.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity3.this, TutorAvailabilityActivity.class);
-
-                i.putExtra("email", tutorEmail);
-                startActivity(i);
-            }
+        btnManageAvailability.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity3.this, TutorAvailabilityActivity.class);
+            intent.putExtra("email", tutorEmail);
+            startActivity(intent);
         });
     }
 }

@@ -38,7 +38,7 @@ import com.example.otams.model.TutorAvailabilityEntity;
                 TutorAvailabilityEntity.class
 
         },
-        version = 4, // Changed from 3 to 4
+        version = 5, // Changed from 4 to 5
         exportSchema = false
 )
 @TypeConverters({Converters.class})
@@ -96,4 +96,10 @@ public abstract class AppDatabase extends RoomDatabase {
                     db.execSQL("CREATE INDEX IF NOT EXISTS `index_tutor_availability_tutorEmail` ON `tutor_availability` (`tutorEmail`)");
                 }
             };
+
+    public static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE tutor_availability ADD COLUMN studentEmail TEXT");
+        }
+    };
 }

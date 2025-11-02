@@ -2,6 +2,7 @@ package com.example.otams;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -41,6 +42,13 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             tutorEmail = "tutor@otams.ca";
         }
 
+        Button btnPast = findViewById(R.id.btnPast);
+        btnPast.setOnClickListener(v -> {
+            Intent intent = new Intent(TutorAvailabilityActivity.this, PastAvailabilities.class);
+            intent.putExtra("email", tutorEmail);
+            startActivity(intent);
+        });
+
         RecyclerView rv = findViewById(R.id.rvAvailability);
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new TutorAvailabilityAdapter(new TutorAvailabilityAdapter.OnDeleteClickListener() {
@@ -56,13 +64,16 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(v -> showAddDialog());
 
         Button btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
-
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(TutorAvailabilityActivity.this, MainActivity3.class);
+            intent.putExtra("email", tutorEmail);
+            startActivity(intent);
+        });
         loadData();
     }
 
     private void loadData() {
-        List<TutorAvailabilityEntity> list = dao.getSlotsForTutor(tutorEmail);
+        List<TutorAvailabilityEntity> list = dao.getFutureAvailabilities(tutorEmail);
         adapter.submitList(list);
     }
 
@@ -73,7 +84,6 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
                 this,
                 (view, year, month, dayOfMonth) -> {
                     String dateStr = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
-
 
                     Calendar picked = Calendar.getInstance();
                     picked.set(year, month, dayOfMonth, 0, 0, 0);
