@@ -112,6 +112,13 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
                                                 return;
                                             }
 
+
+                                            // Each availability slot must be 30 minutes
+                                            if (isThirtyMinutes(hourOfDay, endHour, startMin, endMin) == false) {
+                                                Toast.makeText(this, "Each availability slot must be exactly 30 minutes.", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+
                                             // double check
                                             List<TutorAvailabilityEntity> overlaps =
                                                     dao.findOverlapping(tutorEmail, dateStr, startStr, endStr);
@@ -154,10 +161,20 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    private boolean isThirtyMinutes(int startHour, int endHour, int startMinute, int endMinute) {
+        if ((endHour * 60 + endMinute) - (startHour * 60 + startMinute) == 30) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     private int to30(int minute) {
         // 0~29 -> 0, 30~59 -> 30
         if (minute < 30) return 0;
         return 30;
     }
+
 }
 

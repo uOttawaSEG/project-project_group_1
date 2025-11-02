@@ -16,8 +16,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.otams.data.AppDatabase;
 import com.example.otams.data.TutorAvailabilityDao;
+import com.example.otams.data.TutorDao;
 import com.example.otams.data.UserDao;
 import com.example.otams.model.TutorAvailabilityEntity;
+import com.example.otams.model.TutorEntity;
 import com.example.otams.model.UserEntity;
 
 import java.util.List;
@@ -28,6 +30,8 @@ public class PastAvailabilities extends AppCompatActivity {
     private UserDao userDao;
 
     private TutorAvailabilityDao tutorDao;
+
+    private TutorDao dao;
 
     private AppDatabase db;
 
@@ -45,6 +49,7 @@ public class PastAvailabilities extends AppCompatActivity {
         });
 
         db = ((App) getApplication()).getDb();
+        dao = db.tutorDao();
         tutorDao = db.tutorAvailabilityDao();
         userDao = db.userDao();
         layout = findViewById(R.id.layoutPast);
@@ -58,10 +63,6 @@ public class PastAvailabilities extends AppCompatActivity {
         });
 
         loadPastAvailabilities();
-
-
-
-
     }
 
     private void loadPastAvailabilities() {
@@ -76,6 +77,12 @@ public class PastAvailabilities extends AppCompatActivity {
         layout.addView(itemView);
 
         String studentEmail = pastAvailability.studentEmail;
+        TutorEntity tutor = dao.findByEmail(tutorEmail);
+        List<String> courses = tutor.coursesOffered;
+        String listCourses = "";
+        for (int i = 0; i < courses.size(); i++) {
+            listCourses = listCourses + courses.get(i);
+        }
 
         if (studentEmail != null) {
             UserEntity student = userDao.findByEmail(studentEmail);
@@ -86,6 +93,7 @@ public class PastAvailabilities extends AppCompatActivity {
             TextView viewDate = itemView.findViewById(R.id.pastDate);
             TextView viewTime = itemView.findViewById(R.id.pastTime);
             TextView viewStatus = itemView.findViewById(R.id.pastStatus);
+            TextView viewCourse = itemView.findViewById(R.id.pastCourse);
 
 
             viewStatus.setText("SESSION EXPIRED");
@@ -95,6 +103,8 @@ public class PastAvailabilities extends AppCompatActivity {
             viewDate.setText(pastAvailability.date);
             String time = pastAvailability.startTime + "-" + pastAvailability.endTime;
             viewTime.setText(time);
+            viewCourse.setText(listCourses);
+
         }
         else {
 
@@ -104,6 +114,7 @@ public class PastAvailabilities extends AppCompatActivity {
             TextView viewDate = itemView.findViewById(R.id.pastDate);
             TextView viewTime = itemView.findViewById(R.id.pastTime);
             TextView viewStatus = itemView.findViewById(R.id.pastStatus);
+            TextView viewCourse = itemView.findViewById(R.id.pastCourse);
 
             viewStatus.setText("SESSION EXPIRED");
             viewFirstName.setText("NO STUDENT HAS REGISTERED TO THIS SLOT");
@@ -112,6 +123,7 @@ public class PastAvailabilities extends AppCompatActivity {
             viewDate.setText(pastAvailability.date);
             String time = pastAvailability.startTime + "-" + pastAvailability.endTime;
             viewTime.setText(time);
+            viewCourse.setText(listCourses);
         }
     }
 }
