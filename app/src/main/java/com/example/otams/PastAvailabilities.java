@@ -57,6 +57,8 @@ public class PastAvailabilities extends AppCompatActivity {
             startActivity(intent);
         });
 
+        loadPastAvailabilities();
+
 
 
 
@@ -79,7 +81,7 @@ public class PastAvailabilities extends AppCompatActivity {
             UserEntity student = userDao.findByEmail(studentEmail);
 
             TextView viewFirstName = itemView.findViewById(R.id.pastFName);
-            TextView viewLastName = itemView.findViewById(R.id.pastFName);
+            TextView viewLastName = itemView.findViewById(R.id.pastLName);
             TextView viewEmail = itemView.findViewById(R.id.pastEmail);
             TextView viewDate = itemView.findViewById(R.id.pastDate);
             TextView viewTime = itemView.findViewById(R.id.pastTime);
@@ -91,12 +93,13 @@ public class PastAvailabilities extends AppCompatActivity {
             viewLastName.setText(student.lastName);
             viewEmail.setText(student.email);
             viewDate.setText(pastAvailability.date);
-            viewTime.setText(pastAvailability.endTime);
+            String time = pastAvailability.startTime + "-" + pastAvailability.endTime;
+            viewTime.setText(time);
         }
         else {
 
             TextView viewFirstName = itemView.findViewById(R.id.pastFName);
-            TextView viewLastName = itemView.findViewById(R.id.pastFName);
+            TextView viewLastName = itemView.findViewById(R.id.pastLName);
             TextView viewEmail = itemView.findViewById(R.id.pastEmail);
             TextView viewDate = itemView.findViewById(R.id.pastDate);
             TextView viewTime = itemView.findViewById(R.id.pastTime);
@@ -107,7 +110,8 @@ public class PastAvailabilities extends AppCompatActivity {
             viewLastName.setText("NO STUDENT HAS REGISTERED TO THIS SLOT");
             viewEmail.setText("NO STUDENT HAS REGISTERED TO THIS SLOT");
             viewDate.setText(pastAvailability.date);
-            viewTime.setText(pastAvailability.endTime);
+            String time = pastAvailability.startTime + "-" + pastAvailability.endTime;
+            viewTime.setText(time);
         }
     }
 }
