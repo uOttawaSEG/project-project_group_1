@@ -27,6 +27,12 @@ public class TutorAvailabilityEntity {
 
     public boolean autoApprove;
 
+
+    // NONE, PENDING, ACCEPTED, REJECTED, CANCELLED, EXPIRED
+    @NonNull
+    public String requestStatus = "NONE";
+
     @Nullable
     public String studentEmail;
+
 }

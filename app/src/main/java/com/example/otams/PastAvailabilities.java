@@ -84,7 +84,7 @@ public class PastAvailabilities extends AppCompatActivity {
             listCourses = listCourses + courses.get(i);
         }
 
-        if (studentEmail != null) {
+        if (studentEmail != null && (!pastAvailability.requestStatus.equals("NONE"))) {
             UserEntity student = userDao.findByEmail(studentEmail);
 
             TextView viewFirstName = itemView.findViewById(R.id.pastFName);

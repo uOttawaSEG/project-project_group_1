@@ -38,7 +38,7 @@ import com.example.otams.model.TutorAvailabilityEntity;
                 TutorAvailabilityEntity.class
 
         },
-        version = 5, // Changed from 4 to 5
+        version = 6, // Changed from 5 to 6
         exportSchema = false
 )
 @TypeConverters({Converters.class})
@@ -100,6 +100,12 @@ public abstract class AppDatabase extends RoomDatabase {
     public static final Migration MIGRATION_4_5 = new Migration(4, 5) {
         @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
             db.execSQL("ALTER TABLE tutor_availability ADD COLUMN studentEmail TEXT");
+        }
+    };
+
+    public static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+        @Override public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE tutor_availability ADD COLUMN requestStatus TEXT NOT NULL DEFAULT 'NONE'");
         }
     };
 }

@@ -4,7 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -14,8 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.otams.data.AppDatabase;
 import com.example.otams.data.TutorAvailabilityDao;
+import com.example.otams.data.TutorDao;
+import com.example.otams.data.UserDao;
 import com.example.otams.model.TutorAvailabilityEntity;
 import com.example.otams.App;
+import com.example.otams.model.TutorEntity;
+import com.example.otams.model.UserEntity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
@@ -24,8 +32,14 @@ import java.util.List;
 public class TutorAvailabilityActivity extends AppCompatActivity {
 
     private TutorAvailabilityDao dao;
-    private TutorAvailabilityAdapter adapter;
+
+    private UserDao userDao;
+
+    private TutorDao tutorDao;
+
     private String tutorEmail;
+
+    LinearLayout layout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +48,9 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
 
         AppDatabase db = ((App) getApplication()).getDb();
         dao = db.tutorAvailabilityDao();
-
+        userDao = db.userDao();
+        tutorDao = db.tutorDao();
+        layout = findViewById(R.id.layoutCurrent);
 
         tutorEmail = getIntent().getStringExtra("email");
         if (tutorEmail == null) {
@@ -49,17 +65,7 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        RecyclerView rv = findViewById(R.id.rvAvailability);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new TutorAvailabilityAdapter(new TutorAvailabilityAdapter.OnDeleteClickListener() {
-            @Override
-            public void onDelete(TutorAvailabilityEntity e) {
-                dao.delete(e);
-                loadData();
-            }
-        });
-        rv.setAdapter(adapter);
-
+        // Pick availability slot on Calendar button
         Button btnAdd = findViewById(R.id.btnAddSlot);
         btnAdd.setOnClickListener(v -> showAddDialog());
 
@@ -69,14 +75,73 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             intent.putExtra("email", tutorEmail);
             startActivity(intent);
         });
-        loadData();
+
+        loadCurrentAvailabilities();
+
     }
 
-    private void loadData() {
-        List<TutorAvailabilityEntity> list = dao.getFutureAvailabilities(tutorEmail);
-        adapter.submitList(list);
+    private void loadCurrentAvailabilities() {
+        layout.removeAllViews();
+        List<TutorAvailabilityEntity> currentAvailabilities = dao.getFutureAvailabilities(tutorEmail);
+        for (int n = 0; n < currentAvailabilities.size(); n++) {
+            showCurrentAvailabilities(currentAvailabilities.get(n));
+        }
     }
 
+    private void showCurrentAvailabilities(TutorAvailabilityEntity currentAvailability) {
+        View itemView = LayoutInflater.from(this).inflate(R.layout.item_tutor_availability, layout, false);
+        layout.addView(itemView);
+
+        String studentEmail = currentAvailability.studentEmail;
+        TutorEntity tutor = tutorDao.findByEmail(tutorEmail);
+        List<String> courses = tutor.coursesOffered;
+        String listCourses = "";
+        for (int i = 0; i < courses.size(); i++) {
+            listCourses = listCourses + courses.get(i);
+        }
+
+        if (studentEmail == null && currentAvailability.requestStatus.equals("NONE")) {
+            TextView viewFirstName = itemView.findViewById(R.id.currentFName);
+            TextView viewLastName = itemView.findViewById(R.id.currentLName);
+            TextView viewEmail = itemView.findViewById(R.id.currentEmail);
+            TextView viewDate = itemView.findViewById(R.id.currentDate);
+            TextView viewTime = itemView.findViewById(R.id.currentTime);
+            TextView viewRequestStatus = itemView.findViewById(R.id.currentStatus);
+            TextView viewCourse = itemView.findViewById(R.id.currentCourse);
+
+            viewFirstName.setText("NO STUDENT IS REGISTERED TO THIS TIME SLOT");
+            viewLastName.setText("NO STUDENT IS REGISTERED TO THIS TIME SLOT");
+            viewEmail.setText("NO STUDENT IS REGISTERED TO THIS TIME SLOT");
+            viewDate.setText(currentAvailability.date);
+            String time = currentAvailability.startTime + "-" + currentAvailability.endTime;
+            viewTime.setText(time);
+            viewRequestStatus.setText("NONE");
+            viewCourse.setText(listCourses);
+        }
+
+        else {
+            UserEntity student = userDao.findByEmail(studentEmail);
+
+            TextView viewFirstName = itemView.findViewById(R.id.currentFName);
+            TextView viewLastName = itemView.findViewById(R.id.currentLName);
+            TextView viewEmail = itemView.findViewById(R.id.currentEmail);
+            TextView viewDate = itemView.findViewById(R.id.currentDate);
+            TextView viewTime = itemView.findViewById(R.id.currentTime);
+            TextView viewRequestStatus = itemView.findViewById(R.id.currentStatus);
+            TextView viewCourse = itemView.findViewById(R.id.currentCourse);
+
+            viewFirstName.setText(student.firstName);
+            viewLastName.setText(student.lastName);
+            viewEmail.setText(student.email);
+            viewDate.setText(currentAvailability.date);
+            String time = currentAvailability.startTime + "-" + currentAvailability.endTime;
+            viewTime.setText(time);
+            viewRequestStatus.setText(currentAvailability.requestStatus);
+            viewCourse.setText(listCourses);
+        }
+    }
+
+    // Pick availability slot on Calendar
     private void showAddDialog() {
         final Calendar now = Calendar.getInstance();
 
@@ -136,8 +201,8 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
                                             e.autoApprove = false;
 
                                             dao.insert(e);
-                                            loadData();
-
+                                            layout.removeAllViews();
+                                            loadCurrentAvailabilities();
                                         },
                                         now.get(Calendar.HOUR_OF_DAY),
                                         now.get(Calendar.MINUTE),
