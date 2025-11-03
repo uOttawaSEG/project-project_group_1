@@ -78,6 +78,9 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
 
         // TODO auto-approve
         // When clicked, requestStatus goes from NONE -> ACCEPTED
+        // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
+        // Go to the student page to send a request to test if it works
+        // An availability slot is 30 minutes
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
         btnAutoApprove.setOnClickListener(v -> {
 
@@ -101,6 +104,9 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
 
         // TODO Button Approve Request
         // currentAvailability requestStatus from PENDING -> ACCEPTED (all uppercase)
+        // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
+        // Go to the student page to send a request to test if it works
+        // An availability slot is 30 minutes
         Button btnApproveRequest = itemView.findViewById(R.id.btnApproveRequest);
         btnApproveRequest.setOnClickListener(v -> {
 
@@ -112,8 +118,11 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         });
 
         // TODO Button Reject Request
-        // currentAvailability requestStatus from PENDING -> REJECTED (all uppercase)
         // Clear the availability slot of it's associated student and reset status to NONE
+        // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
+        // Go to the student page to send a request to test if it works
+        // No student information should be displayed anymore
+        // An availability slot is 30 minutes
         Button btnRejectRequest = itemView.findViewById(R.id.btnRejectRequest);
         btnRejectRequest.setOnClickListener(v -> {
 
@@ -124,13 +133,13 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         });
 
         // TODO Button Delete Slot
+        // Just delete the slot
+        // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
         Button btnDelete = itemView.findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(v -> {
 
 
-            // Keep at the end
-            layout.removeAllViews();
-            loadCurrentAvailabilities();
+
         });
 
         String studentEmail = currentAvailability.studentEmail;

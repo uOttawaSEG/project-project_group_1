@@ -1,5 +1,6 @@
 package com.example.otams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,12 @@ public class ViewSessions extends AppCompatActivity {
         layout = findViewById(R.id.layoutViewSessions);
         studentEmail = getIntent().getStringExtra("email");
 
+        Button btnQuit = findViewById(R.id.btnQuitViewSessions);
+        btnQuit.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewSessions.this, MainActivity4.class);
+            startActivity(intent);
+        });
+
         loadSessions();
     }
 
@@ -64,6 +71,10 @@ public class ViewSessions extends AppCompatActivity {
             String email = tutorDao.getTutorEmail(tutorID);
             List<TutorAvailabilityEntity> listAvailabilities = tutorAvailabilityDao.getFutureAvailabilities(email);
             for (int i = 0; i < listAvailabilities.size(); i++) {
+                TutorAvailabilityEntity slot = listAvailabilities.get(i);
+                if (!slot.requestStatus.equals("NONE")) {
+                    continue;
+                }
                 showAvailabilities(listAvailabilities.get(i), tutorID);
             }
         }
@@ -81,6 +92,7 @@ public class ViewSessions extends AppCompatActivity {
             slot.requestStatus = "PENDING";
             slot.studentEmail = studentEmail;
             tutorAvailabilityDao.update(slot);
+            layout.removeView(itemView);
         });
 
         List<String> courses = TA.coursesOffered;
@@ -91,12 +103,14 @@ public class ViewSessions extends AppCompatActivity {
 
         TextView viewFirstName = itemView.findViewById(R.id.slotFName);
         TextView viewLastName = itemView.findViewById(R.id.slotLName);
+        TextView viewEmail = itemView.findViewById(R.id.slotEmail);
         TextView viewDate = itemView.findViewById(R.id.slotDate);
         TextView viewTime = itemView.findViewById(R.id.slotTime);
         TextView viewCourse = itemView.findViewById(R.id.slotCourse);
 
         viewFirstName.setText(tutor.firstName);
         viewLastName.setText(tutor.lastName);
+        viewEmail.setText(tutorEmail);
         viewDate.setText(slot.date);
         String time = slot.startTime + "-" + slot.endTime;
         viewTime.setText(time);
