@@ -76,8 +76,14 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        loadCurrentAvailabilities();
+        // TODO auto-approve
+        // When clicked, requestStatus goes from NONE -> ACCEPTED
+        Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
+        btnAutoApprove.setOnClickListener(v -> {
 
+        });
+
+        loadCurrentAvailabilities();
     }
 
     private void loadCurrentAvailabilities() {
@@ -91,6 +97,41 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
     private void showCurrentAvailabilities(TutorAvailabilityEntity currentAvailability) {
         View itemView = LayoutInflater.from(this).inflate(R.layout.item_tutor_availability, layout, false);
         layout.addView(itemView);
+
+
+        // TODO Button Approve Request
+        // currentAvailability requestStatus from PENDING -> ACCEPTED (all uppercase)
+        Button btnApproveRequest = itemView.findViewById(R.id.btnApproveRequest);
+        btnApproveRequest.setOnClickListener(v -> {
+
+
+            // Keep at the end
+            layout.removeAllViews();
+            loadCurrentAvailabilities();
+
+        });
+
+        // TODO Button Reject Request
+        // currentAvailability requestStatus from PENDING -> REJECTED (all uppercase)
+        // Clear the availability slot of it's associated student and reset status to NONE
+        Button btnRejectRequest = itemView.findViewById(R.id.btnRejectRequest);
+        btnRejectRequest.setOnClickListener(v -> {
+
+
+            // Keep at the end
+            layout.removeAllViews();
+            loadCurrentAvailabilities();
+        });
+
+        // TODO Button Delete Slot
+        Button btnDelete = itemView.findViewById(R.id.btnDelete);
+        btnDelete.setOnClickListener(v -> {
+
+
+            // Keep at the end
+            layout.removeAllViews();
+            loadCurrentAvailabilities();
+        });
 
         String studentEmail = currentAvailability.studentEmail;
         TutorEntity tutor = tutorDao.findByEmail(tutorEmail);

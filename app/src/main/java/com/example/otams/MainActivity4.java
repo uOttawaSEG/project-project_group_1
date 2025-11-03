@@ -8,6 +8,9 @@ import android.widget.Button;
 
 
 public class MainActivity4 extends AppCompatActivity {
+
+    private String studentEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +24,15 @@ public class MainActivity4 extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // optional, removes MainActivity2 from back stack
             }
+        });
+
+        studentEmail = getIntent().getStringExtra("email");
+
+        Button btnViewSessions = findViewById(R.id.btnViewSessions);
+        btnViewSessions.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity4.this, ViewSessions.class);
+            intent.putExtra("email", studentEmail);
+            startActivity(intent);
         });
 
     }

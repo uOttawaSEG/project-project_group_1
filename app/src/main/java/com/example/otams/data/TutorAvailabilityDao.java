@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.otams.model.TutorAvailabilityEntity;
 
@@ -53,5 +54,8 @@ public interface TutorAvailabilityDao {
             String startTime,
             String endTime
     );
+
+    @Update
+    int update(TutorAvailabilityEntity slot);
 }
 

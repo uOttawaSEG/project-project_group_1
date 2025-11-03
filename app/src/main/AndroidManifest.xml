@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
+            android:name=".ViewSessions"
+            android:exported="false" />
+        <activity
             android:name=".PastAvailabilities"
             android:exported="false" />
         <activity
