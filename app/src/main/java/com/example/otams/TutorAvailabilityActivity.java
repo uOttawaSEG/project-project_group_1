@@ -83,6 +83,20 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // An availability slot is 30 minutes
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
         btnAutoApprove.setOnClickListener(v -> {
+            List<TutorAvailabilityEntity> slots = dao.getFutureAvailabilities(tutorEmail);
+            int count = 0;
+
+            for (TutorAvailabilityEntity slot : slots) {
+                if ("NONE".equals(slot.requestStatus)) {
+                    slot.requestStatus = "ACCEPTED";
+                    slot.autoApprove = true;
+                    dao.update(slot);
+                    count++;
+                }
+            }
+            layout.removeAllViews();
+            loadCurrentAvailabilities();
+            Toast.makeText(TutorAvailabilityActivity.this, count + " slot(s) auto-approved", Toast.LENGTH_SHORT).show();
 
         });
 
@@ -109,9 +123,10 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // An availability slot is 30 minutes
         Button btnApproveRequest = itemView.findViewById(R.id.btnApproveRequest);
         btnApproveRequest.setOnClickListener(v -> {
+            currentAvailability.requestStatus = "ACCEPTED";
+            dao.update(currentAvailability);
 
 
-            // Keep at the end
             layout.removeAllViews();
             loadCurrentAvailabilities();
 
@@ -125,9 +140,11 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // An availability slot is 30 minutes
         Button btnRejectRequest = itemView.findViewById(R.id.btnRejectRequest);
         btnRejectRequest.setOnClickListener(v -> {
+            currentAvailability.requestStatus = "NONE";
+            dao.update(currentAvailability);
 
 
-            // Keep at the end
+
             layout.removeAllViews();
             loadCurrentAvailabilities();
         });
