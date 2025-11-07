@@ -84,7 +84,7 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // Use the update method of TutorAvailabilityDao (dao.update)
         // Create a student and make it apply for slots, if the button is clicked it's status should automatically be ACCEPTED, not PENDING
         // OPTIONAL: add functionality and text to turn auto-approve ON and OFF
-        // 我知道你能行! 六六六
+        // 我知道你能行! 六六六你真牛！
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
         btnAutoApprove.setOnClickListener(v -> {
 

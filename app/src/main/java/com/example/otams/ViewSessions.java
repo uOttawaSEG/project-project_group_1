@@ -72,10 +72,15 @@ public class ViewSessions extends AppCompatActivity {
             List<TutorAvailabilityEntity> listAvailabilities = tutorAvailabilityDao.getFutureAvailabilities(email);
             for (int i = 0; i < listAvailabilities.size(); i++) {
                 TutorAvailabilityEntity slot = listAvailabilities.get(i);
-                if (!slot.requestStatus.equals("NONE")) {
+                if (slot.autoApprove == true && slot.studentEmail == null) {
+                    showAvailabilities(listAvailabilities.get(i), tutorID);
+                }
+                else if (slot.autoApprove == false && slot.studentEmail == null) {
+                    showAvailabilities(listAvailabilities.get(i), tutorID);
+                }
+                else {
                     continue;
                 }
-                showAvailabilities(listAvailabilities.get(i), tutorID);
             }
         }
     }
