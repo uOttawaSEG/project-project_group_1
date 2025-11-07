@@ -84,8 +84,6 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
         btnAutoApprove.setOnClickListener(v -> {
         });
-
-        loadCurrentAvailabilities();
     }
 
     private void loadCurrentAvailabilities() {
