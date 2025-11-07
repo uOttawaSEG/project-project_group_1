@@ -154,8 +154,10 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
         Button btnDelete = itemView.findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(v -> {
-
-
+            dao.delete(currentAvailability);
+            layout.removeAllViews();
+            loadCurrentAvailabilities();
+            Toast.makeText(TutorAvailabilityActivity.this, "Slot deleted", Toast.LENGTH_SHORT).show();
 
         });
 
