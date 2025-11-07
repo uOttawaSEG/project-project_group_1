@@ -89,6 +89,8 @@ public class ViewSessions extends AppCompatActivity {
 
         Button btnAdd = itemView.findViewById(R.id.btnAddSession);
         btnAdd.setOnClickListener(v -> {
+            // TODO
+            // Add an if else statement here
             slot.requestStatus = "PENDING";
             slot.studentEmail = studentEmail;
             tutorAvailabilityDao.update(slot);
