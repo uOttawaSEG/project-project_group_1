@@ -134,6 +134,7 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         Button btnRejectRequest = itemView.findViewById(R.id.btnRejectRequest);
         btnRejectRequest.setOnClickListener(v -> {
             currentAvailability.requestStatus = "NONE";
+            currentAvailability.studentEmail = null;
             dao.update(currentAvailability);
 
 
