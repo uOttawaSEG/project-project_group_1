@@ -77,13 +77,25 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         });
 
         // TODO auto-approve
-        // When clicked, requestStatus goes from NONE -> ACCEPTED
-        // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
-        // Go to the student page to send a request to test if it works
-        // An availability slot is 30 minutes
+        // When clicked, the requestStatus of a student automatically goes to ACCEPTED without going to PENDING first
+        // You will have to add an if statement in the ViewSessions class, for the btnAddSession section
+        // If autoApprove for the TutorAvailabilityEntity = true, then in that if statement requestStatus = ACCEPTED (in ViewSessions)
+        // Relevant classes: TutorAvailabilityEntity, TutorAvailabilityActivity, ViewSessions, TutorAvailabilityDao
+        // Use the update method for the slots in TutorAvailabilityDao
+        // Create a student and apply for slots to see if it works (before and after auto-approve is clicked)
+        // An availability slot is always 30 minutes, no more no less
+        // If no student has registered for a slot, nothing should happen
+        // OPTIONAL: add functionality and text to turn auto-approve ON and OFF
+        // 我知道你能行! 六六六
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
         btnAutoApprove.setOnClickListener(v -> {
+
+            // Keep this at the end
+            layout.removeAllViews();
+            loadCurrentAvailabilities();
         });
+
+        loadCurrentAvailabilities();
     }
 
     private void loadCurrentAvailabilities() {
