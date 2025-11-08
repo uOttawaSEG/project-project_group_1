@@ -116,12 +116,17 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // An availability slot is 30 minutes
         Button btnApproveRequest = itemView.findViewById(R.id.btnApproveRequest);
         btnApproveRequest.setOnClickListener(v -> {
-            currentAvailability.requestStatus = "ACCEPTED";
-            dao.update(currentAvailability);
+            if (currentAvailability.studentEmail != null) {
+                currentAvailability.requestStatus = "ACCEPTED";
+                dao.update(currentAvailability);
+                layout.removeAllViews();
+                loadCurrentAvailabilities();
+            }
+            else {
+                Toast.makeText(TutorAvailabilityActivity.this, "There is no student to accept!", Toast.LENGTH_SHORT).show();
+            }
 
 
-            layout.removeAllViews();
-            loadCurrentAvailabilities();
 
         });
 
@@ -133,14 +138,17 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // An availability slot is 30 minutes
         Button btnRejectRequest = itemView.findViewById(R.id.btnRejectRequest);
         btnRejectRequest.setOnClickListener(v -> {
-            currentAvailability.requestStatus = "NONE";
-            currentAvailability.studentEmail = null;
-            dao.update(currentAvailability);
+            if (currentAvailability.studentEmail != null) {
+                currentAvailability.requestStatus = "REJECTED";
+                currentAvailability.studentEmail = null;
+                dao.update(currentAvailability);
+                layout.removeAllViews();
+                loadCurrentAvailabilities();
+            }
+            else {
+                Toast.makeText(TutorAvailabilityActivity.this, "There is no student to reject!", Toast.LENGTH_SHORT).show();
+            }
 
-
-
-            layout.removeAllViews();
-            loadCurrentAvailabilities();
         });
 
         // TODO Button Delete Slot
@@ -163,7 +171,7 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             listCourses = listCourses + courses.get(i);
         }
 
-        if (studentEmail == null && currentAvailability.requestStatus.equals("NONE")) {
+        if (studentEmail == null && (currentAvailability.requestStatus.equals("NONE") || currentAvailability.requestStatus.equals("REJECTED"))) {
             TextView viewFirstName = itemView.findViewById(R.id.currentFName);
             TextView viewLastName = itemView.findViewById(R.id.currentLName);
             TextView viewEmail = itemView.findViewById(R.id.currentEmail);

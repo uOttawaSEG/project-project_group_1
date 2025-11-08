@@ -75,11 +75,8 @@ public class ViewSessions extends AppCompatActivity {
                 if (slot.autoApprove == true && slot.studentEmail == null) {
                     showAvailabilities(listAvailabilities.get(i), tutorID);
                 }
-                else if (slot.autoApprove == false && slot.studentEmail == null) {
+                else if (slot.autoApprove == false && slot.studentEmail == null && !slot.requestStatus.equals("REJECTED")) {
                     showAvailabilities(listAvailabilities.get(i), tutorID);
-                }
-                else {
-                    continue;
                 }
             }
         }
