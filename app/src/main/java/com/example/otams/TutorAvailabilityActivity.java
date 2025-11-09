@@ -87,6 +87,12 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // OPTIONAL: add functionality and text to turn auto-approve ON and OFF
         // 我知道你能行! 六六六你真牛！
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
+        if (TutorAvailabilityEntity.autoApproval == false) {
+            btnAutoApprove.setText("ENABLE AUTO-APPROVE");
+        }
+        else if (TutorAvailabilityEntity.autoApproval == true) {
+            btnAutoApprove.setText("DISABLE AUTO-APPROVE");
+        }
         btnAutoApprove.setOnClickListener(v -> {
             if (TutorAvailabilityEntity.autoApproval == false) {
                 btnAutoApprove.setText("DISABLE AUTO-APPROVE");
