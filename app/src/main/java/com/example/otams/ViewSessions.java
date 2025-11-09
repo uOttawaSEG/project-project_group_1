@@ -91,7 +91,12 @@ public class ViewSessions extends AppCompatActivity {
 
         Button btnAdd = itemView.findViewById(R.id.btnAddSession);
         btnAdd.setOnClickListener(v -> {
-            slot.requestStatus = "PENDING";
+            if(slot.autoApprove){
+                slot.requestStatus = "ACCEPTED";
+            }
+            else{
+                slot.requestStatus = "PENDING";
+            }
             slot.studentEmail = studentEmail;
             tutorAvailabilityDao.update(slot);
             layout.removeView(itemView);
