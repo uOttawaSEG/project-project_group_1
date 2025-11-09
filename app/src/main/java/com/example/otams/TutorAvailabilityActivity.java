@@ -146,7 +146,10 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // An availability slot is 30 minutes
         Button btnApproveRequest = itemView.findViewById(R.id.btnApproveRequest);
         btnApproveRequest.setOnClickListener(v -> {
-            if (currentAvailability.studentEmail != null) {
+            if (currentAvailability.studentEmail != null && currentAvailability.requestStatus.equals("ACCEPTED")) {
+                Toast.makeText(TutorAvailabilityActivity.this, "The student is already accepted!", Toast.LENGTH_SHORT).show();
+            }
+            else if (currentAvailability.studentEmail != null) {
                 currentAvailability.requestStatus = "ACCEPTED";
                 dao.update(currentAvailability);
                 layout.removeAllViews();
@@ -155,9 +158,6 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             else {
                 Toast.makeText(TutorAvailabilityActivity.this, "There is no student to accept!", Toast.LENGTH_SHORT).show();
             }
-
-
-
         });
 
         // TODO Button Reject Request
