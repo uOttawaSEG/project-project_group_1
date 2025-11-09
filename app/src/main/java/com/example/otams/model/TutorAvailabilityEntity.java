@@ -8,6 +8,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "tutor_availability")
 public class TutorAvailabilityEntity {
 
+    // Will revert back to false when the app closes
+    public static boolean autoApproval = false;
+
     @PrimaryKey(autoGenerate = true)
     public long id;
 
@@ -28,7 +31,7 @@ public class TutorAvailabilityEntity {
     public boolean autoApprove;
 
 
-    // NONE, PENDING, ACCEPTED
+    // NONE, PENDING, ACCEPTED, REJECTED
     @NonNull
     public String requestStatus = "NONE";
 

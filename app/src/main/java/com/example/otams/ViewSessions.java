@@ -72,11 +72,11 @@ public class ViewSessions extends AppCompatActivity {
             List<TutorAvailabilityEntity> listAvailabilities = tutorAvailabilityDao.getFutureAvailabilities(email);
             for (int i = 0; i < listAvailabilities.size(); i++) {
                 TutorAvailabilityEntity slot = listAvailabilities.get(i);
-                if (slot.autoApprove == true && slot.studentEmail == null) {
+                if (slot.studentEmail == null && !slot.requestStatus.equals("REJECTED")) {
                     showAvailabilities(listAvailabilities.get(i), tutorID);
                 }
-                else if (slot.autoApprove == false && slot.studentEmail == null && !slot.requestStatus.equals("REJECTED")) {
-                    showAvailabilities(listAvailabilities.get(i), tutorID);
+                else {
+                    continue;
                 }
             }
         }
@@ -91,10 +91,10 @@ public class ViewSessions extends AppCompatActivity {
 
         Button btnAdd = itemView.findViewById(R.id.btnAddSession);
         btnAdd.setOnClickListener(v -> {
-            if(slot.autoApprove){
+            if (TutorAvailabilityEntity.autoApproval == true) {
                 slot.requestStatus = "ACCEPTED";
             }
-            else{
+            else if (TutorAvailabilityEntity.autoApproval == false) {
                 slot.requestStatus = "PENDING";
             }
             slot.studentEmail = studentEmail;
@@ -123,6 +123,4 @@ public class ViewSessions extends AppCompatActivity {
         viewTime.setText(time);
         viewCourse.setText(listCourses);
     }
-
-
 }

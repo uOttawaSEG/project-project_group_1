@@ -87,60 +87,36 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // OPTIONAL: add functionality and text to turn auto-approve ON and OFF
         // 我知道你能行! 六六六你真牛！
         Button btnAutoApprove = findViewById(R.id.btnAutoApprove);
-        btnAutoApprove.setText("Enable Auto-Approve");
         btnAutoApprove.setOnClickListener(v -> {
-            List<TutorAvailabilityEntity> futureSlots = dao.getFutureAvailabilities(tutorEmail);
-            boolean OnAutoApprove = false;
-
-            for(int i = 0; i < futureSlots.size(); i++){
-                TutorAvailabilityEntity slot = futureSlots.get(i);
-                if(slot.autoApprove){
-                    OnAutoApprove = true;
-                    break;
-                }
-
+            if (TutorAvailabilityEntity.autoApproval == false) {
+                btnAutoApprove.setText("DISABLE AUTO-APPROVE");
+                enableAutoApprove();
             }
-
-            if(OnAutoApprove){
-                for(int i = 0; i < futureSlots.size(); i++){
-                    TutorAvailabilityEntity slot = futureSlots.get(i);
-                    slot.autoApprove = false;
-                    dao.update(slot);
-                }
-                Toast.makeText(this, "Auto-approve has been disabled.", Toast.LENGTH_SHORT).show();
-                btnAutoApprove.setText("Enable Auto-Approve");
+            else if (TutorAvailabilityEntity.autoApproval == true) {
+                btnAutoApprove.setText("ENABLE AUTO-APPROVE");
+                disableAutoApprove();
             }
-            else{
-                if(futureSlots.isEmpty()){
-                    Toast.makeText(this, "Auto-approve enable, but no future slots yet.", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    for(int i = 0; i < futureSlots.size(); i++){
-                        TutorAvailabilityEntity slot = futureSlots.get(i);
-                        slot.autoApprove = true;
-                        if(slot.studentEmail == null){
-                            slot.requestStatus = "NONE";
-                        }
-                        else{
-                            slot.requestStatus = "ACCEPTED";
-                        }
-                        dao.update(slot);
-                    }
-                    Toast.makeText(this,"Auto-approve has been enabled. All future slots will be auto-accepted.", Toast.LENGTH_SHORT).show();
-
-                }
-                btnAutoApprove.setText("Disable Auto-Approve");
-
-            }
-
-
-
-            // Keep this at the end
-            layout.removeAllViews();
-            loadCurrentAvailabilities();
         });
-
+        layout.removeAllViews();
         loadCurrentAvailabilities();
+    }
+
+    private void enableAutoApprove() {
+        TutorAvailabilityEntity.autoApproval = true;
+        List<TutorAvailabilityEntity> currentAvailabilities = dao.getFutureAvailabilities(tutorEmail);
+        for (int n = 0; n < currentAvailabilities.size(); n++) {
+            TutorAvailabilityEntity slot = currentAvailabilities.get(n);
+            if (!slot.requestStatus.equals("ACCEPTED")) {
+                slot.requestStatus = "ACCEPTED";
+                dao.update(slot);
+            }
+        }
+        layout.removeAllViews();
+        loadCurrentAvailabilities();
+    }
+
+    private void disableAutoApprove() {
+        TutorAvailabilityEntity.autoApproval = false;
     }
 
     private void loadCurrentAvailabilities() {
@@ -218,8 +194,26 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         for (int i = 0; i < courses.size(); i++) {
             listCourses = listCourses + courses.get(i);
         }
+        if (studentEmail == null && currentAvailability.requestStatus.equals("ACCEPTED")) {
+            TextView viewFirstName = itemView.findViewById(R.id.currentFName);
+            TextView viewLastName = itemView.findViewById(R.id.currentLName);
+            TextView viewEmail = itemView.findViewById(R.id.currentEmail);
+            TextView viewDate = itemView.findViewById(R.id.currentDate);
+            TextView viewTime = itemView.findViewById(R.id.currentTime);
+            TextView viewRequestStatus = itemView.findViewById(R.id.currentStatus);
+            TextView viewCourse = itemView.findViewById(R.id.currentCourse);
 
-        if (studentEmail == null && (currentAvailability.requestStatus.equals("NONE") || currentAvailability.requestStatus.equals("REJECTED"))) {
+            viewFirstName.setText("NO STUDENT IS REGISTERED TO THIS TIME SLOT");
+            viewLastName.setText("NO STUDENT IS REGISTERED TO THIS TIME SLOT");
+            viewEmail.setText("NO STUDENT IS REGISTERED TO THIS TIME SLOT");
+            viewDate.setText(currentAvailability.date);
+            String time = currentAvailability.startTime + "-" + currentAvailability.endTime;
+            viewTime.setText(time);
+            viewRequestStatus.setText("ACCEPTED");
+            viewCourse.setText(listCourses);
+        }
+
+         else if (studentEmail == null && (currentAvailability.requestStatus.equals("NONE") || currentAvailability.requestStatus.equals("REJECTED"))) {
             TextView viewFirstName = itemView.findViewById(R.id.currentFName);
             TextView viewLastName = itemView.findViewById(R.id.currentLName);
             TextView viewEmail = itemView.findViewById(R.id.currentEmail);
@@ -236,27 +230,6 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
             viewTime.setText(time);
             viewRequestStatus.setText("NONE");
             viewCourse.setText(listCourses);
-        }
-
-        else if(currentAvailability.autoApprove){
-            TextView viewFirstName = itemView.findViewById(R.id.currentFName);
-            TextView viewLastName = itemView.findViewById(R.id.currentLName);
-            TextView viewEmail = itemView.findViewById(R.id.currentEmail);
-            TextView viewDate = itemView.findViewById(R.id.currentDate);
-            TextView viewTime = itemView.findViewById(R.id.currentTime);
-            TextView viewRequestStatus = itemView.findViewById(R.id.currentStatus);
-            TextView viewCourse = itemView.findViewById(R.id.currentCourse);
-
-            viewFirstName.setText("AUTO-APPROVE ACTIVE");
-            viewLastName.setText("AUTO-APPROVE ACTIVE");
-            viewEmail.setText("Slots will be auto-accepted");
-            viewDate.setText(currentAvailability.date);
-            String time = currentAvailability.startTime + "-" + currentAvailability.endTime;
-            viewTime.setText(time);
-            viewRequestStatus.setText("AUTO");
-            viewCourse.setText(listCourses);
-
-
         }
 
         else {
@@ -340,6 +313,10 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
                                             e.startTime = startStr;
                                             e.endTime = endStr;
                                             e.autoApprove = false;
+
+                                            if (TutorAvailabilityEntity.autoApproval == true) {
+                                                e.requestStatus = "ACCEPTED";
+                                            }
 
                                             dao.insert(e);
                                             layout.removeAllViews();

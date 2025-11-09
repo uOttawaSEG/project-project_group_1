@@ -54,12 +54,6 @@ public interface TutorAvailabilityDao {
             String startTime,
             String endTime
     );
-    //for tutor to autoApprove = true, all future slots are updated
-    @Query("UPDATE tutor_availability " +
-            "SET autoApprove = 1, requestStatus = 'ACCEPTED' " +
-            "WHERE tutorEmail = :email " +
-            "AND datetime(date || ' ' || endTime) >= datetime('now', 'localtime')")
-    void autoApproveEnableForFutureSlots(String email);
 
     @Update
     int update(TutorAvailabilityEntity slot);
