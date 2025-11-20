@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.example.otams.model.TutorAvailabilityEntity;
 import com.example.otams.model.TutorEntity;
 import com.example.otams.model.UserEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewSessions extends AppCompatActivity {
@@ -36,6 +38,8 @@ public class ViewSessions extends AppCompatActivity {
 
     private String studentEmail;
 
+    private String courseCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,31 +53,45 @@ public class ViewSessions extends AppCompatActivity {
 
         AppDatabase db = ((App) getApplication()).getDb();
         userDao = db.userDao();
+        layout = findViewById(R.id.layoutViewSessions);
         tutorDao = db.tutorDao();
         tutorAvailabilityDao = db.tutorAvailabilityDao();
-        layout = findViewById(R.id.layoutViewSessions);
         studentEmail = getIntent().getStringExtra("email");
 
-        Button btnQuit = findViewById(R.id.btnQuitViewSessions);
-        btnQuit.setOnClickListener(v -> {
+
+        EditText editCourseCode = findViewById(R.id.enterCourseCode);
+        Button btnCourseCode = findViewById(R.id.btnCourseCode);
+
+        btnCourseCode.setOnClickListener(v -> {
+            courseCode = editCourseCode.getText().toString().trim();
+            loadSessions();
+        });
+
+        Button btnQuitViewSessions = findViewById(R.id.btnQuitViewSessions);
+        btnQuitViewSessions.setOnClickListener(v -> {
             Intent intent = new Intent(ViewSessions.this, MainActivity4.class);
             startActivity(intent);
         });
-
-        loadSessions();
     }
 
     private void loadSessions() {
         List<TutorEntity> allTutors = tutorDao.getAllTutors();
+        List<TutorEntity> validTutors = new ArrayList<TutorEntity>();
         for (int n = 0; n < allTutors.size(); n++) {
             TutorEntity tutor = allTutors.get(n);
+            if (tutor.coursesOffered.contains(courseCode)) {
+                validTutors.add(tutor);
+            }
+        }
+        for (int n = 0; n < validTutors.size(); n++) {
+            TutorEntity tutor = validTutors.get(n);
             String tutorID = tutor.userId;
             String email = tutorDao.getTutorEmail(tutorID);
             List<TutorAvailabilityEntity> listAvailabilities = tutorAvailabilityDao.getFutureAvailabilities(email);
             for (int i = 0; i < listAvailabilities.size(); i++) {
                 TutorAvailabilityEntity slot = listAvailabilities.get(i);
                 if (slot.studentEmail == null && !slot.requestStatus.equals("REJECTED")) {
-                    showAvailabilities(listAvailabilities.get(i), tutorID);
+                    showAvailabilities(listAvailabilities.get(i), email);
                 }
                 else {
                     continue;
@@ -82,13 +100,11 @@ public class ViewSessions extends AppCompatActivity {
         }
     }
 
-    private void showAvailabilities(TutorAvailabilityEntity slot, String tutorID) {
+    private void showAvailabilities(TutorAvailabilityEntity slot, String email) {
         View itemView = LayoutInflater.from(this).inflate(R.layout.item_slot, layout, false);
         layout.addView(itemView);
-        String tutorEmail = tutorDao.getTutorEmail(tutorID);
-        UserEntity tutor = userDao.findByEmail(tutorEmail);
-        TutorEntity TA = tutorDao.findByEmail(tutorEmail);
-
+        UserEntity tutor = userDao.findByEmail(email);
+        TutorEntity TA = tutorDao.findByEmail(email);
         Button btnAdd = itemView.findViewById(R.id.btnAddSession);
         btnAdd.setOnClickListener(v -> {
             if (TutorAvailabilityEntity.autoApproval == true) {
@@ -117,7 +133,7 @@ public class ViewSessions extends AppCompatActivity {
 
         viewFirstName.setText(tutor.firstName);
         viewLastName.setText(tutor.lastName);
-        viewEmail.setText(tutorEmail);
+        viewEmail.setText(email);
         viewDate.setText(slot.date);
         String time = slot.startTime + "-" + slot.endTime;
         viewTime.setText(time);
