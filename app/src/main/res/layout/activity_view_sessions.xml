@@ -44,6 +44,16 @@
                 android:text="Search" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layoutDisplaySessions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
     </LinearLayout>
+
+
+
+
 
 </ScrollView>

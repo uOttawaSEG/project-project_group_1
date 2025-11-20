@@ -1,5 +1,8 @@
 package com.example.otams;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -53,7 +56,7 @@ public class ViewSessions extends AppCompatActivity {
 
         AppDatabase db = ((App) getApplication()).getDb();
         userDao = db.userDao();
-        layout = findViewById(R.id.layoutViewSessions);
+        layout = findViewById(R.id.layoutDisplaySessions);
         tutorDao = db.tutorDao();
         tutorAvailabilityDao = db.tutorAvailabilityDao();
         studentEmail = getIntent().getStringExtra("email");
@@ -64,6 +67,7 @@ public class ViewSessions extends AppCompatActivity {
 
         btnCourseCode.setOnClickListener(v -> {
             courseCode = editCourseCode.getText().toString().trim();
+            layout.removeAllViews();
             loadSessions();
         });
 
@@ -77,6 +81,7 @@ public class ViewSessions extends AppCompatActivity {
     private void loadSessions() {
         List<TutorEntity> allTutors = tutorDao.getAllTutors();
         List<TutorEntity> validTutors = new ArrayList<TutorEntity>();
+        List<TutorAvailabilityEntity> previouslySelected = new ArrayList<TutorAvailabilityEntity>();
         for (int n = 0; n < allTutors.size(); n++) {
             TutorEntity tutor = allTutors.get(n);
             if (tutor.coursesOffered.contains(courseCode)) {
@@ -88,8 +93,33 @@ public class ViewSessions extends AppCompatActivity {
             String tutorID = tutor.userId;
             String email = tutorDao.getTutorEmail(tutorID);
             List<TutorAvailabilityEntity> listAvailabilities = tutorAvailabilityDao.getFutureAvailabilities(email);
+
+            for (int m = 0; m < listAvailabilities.size(); m++) {
+                if (listAvailabilities.get(m).studentEmail != null) {
+                    if (listAvailabilities.get(m).studentEmail.equals(studentEmail)) {
+                        previouslySelected.add(listAvailabilities.get(m));
+                    }
+                }
+            }
+
             for (int i = 0; i < listAvailabilities.size(); i++) {
                 TutorAvailabilityEntity slot = listAvailabilities.get(i);
+                boolean selected = false;
+                for (int z = 0; z < previouslySelected.size(); z++) {
+                    TutorAvailabilityEntity previouslySelectedSlot = previouslySelected.get(z);
+                    LocalDate date = LocalDate.parse(slot.date);
+                    LocalTime slotStartTime = LocalTime.parse(slot.startTime);
+                    LocalTime slotEndTime = LocalTime.parse(slot.endTime);
+                    LocalDate previousDate = LocalDate.parse(previouslySelectedSlot.date);
+                    LocalTime previousStartTime = LocalTime.parse(previouslySelectedSlot.startTime);
+                    LocalTime previousEndTime = LocalTime.parse(previouslySelectedSlot.endTime);
+                    if (date.equals(previousDate) && (slotStartTime.equals(previousStartTime) && slotEndTime.equals(previousEndTime))) {
+                        selected = true;
+                    }
+                }
+                if (selected == true) {
+                    continue;
+                }
                 if (slot.studentEmail == null && !slot.requestStatus.equals("REJECTED")) {
                     showAvailabilities(listAvailabilities.get(i), email);
                 }
@@ -115,7 +145,8 @@ public class ViewSessions extends AppCompatActivity {
             }
             slot.studentEmail = studentEmail;
             tutorAvailabilityDao.update(slot);
-            layout.removeView(itemView);
+            layout.removeAllViews();
+            loadSessions();
         });
 
         List<String> courses = TA.coursesOffered;
