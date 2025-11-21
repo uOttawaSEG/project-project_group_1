@@ -55,6 +55,13 @@ public interface TutorAvailabilityDao {
             String endTime
     );
 
+
+
+    @Query("SELECT * FROM tutor_availability " +
+            "WHERE studentEmail = :email " +
+            "ORDER BY date DESC, startTime DESC")
+    List<TutorAvailabilityEntity> getSessionsForStudent(String email);
+
     @Update
     int update(TutorAvailabilityEntity slot);
 }

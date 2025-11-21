@@ -74,6 +74,7 @@ public class ViewSessions extends AppCompatActivity {
         Button btnQuitViewSessions = findViewById(R.id.btnQuitViewSessions);
         btnQuitViewSessions.setOnClickListener(v -> {
             Intent intent = new Intent(ViewSessions.this, MainActivity4.class);
+            intent.putExtra("email", studentEmail);
             startActivity(intent);
         });
     }
