@@ -20,10 +20,10 @@
             android:exported="false" />
         <activity
             android:name=".ViewPendingRequests"
-            android:exported="false" />
+            android:exported="false" /> <!-- Main activities -->
         <activity
             android:name=".ViewRejectedRequests"
-            android:exported="false" />
+            android:exported="false" /> <!-- Main activities -->
         <activity
             android:name=".TutorAvailabilityActivity"
             android:exported="false" />
@@ -31,6 +31,7 @@
         <activity android:name=".MainActivity3" />
         <activity android:name=".MainActivity2" />
         <activity android:name=".TutorRegistrationActivity" />
+        <activity android:name=".StudentSessionsActivity" />
         <activity android:name=".StudentRegistrationActivity" /> <!-- Shared MainActivity -->
         <activity
             android:name=".MainActivity"

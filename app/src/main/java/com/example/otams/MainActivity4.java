@@ -35,5 +35,12 @@ public class MainActivity4 extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button btnPreviousSessions = findViewById(R.id.btnPreviousSessions);
+        btnPreviousSessions.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity4.this, StudentSessionsActivity.class);
+            intent.putExtra("email", studentEmail);
+            startActivity(intent);
+        });
+
     }
 }

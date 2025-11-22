@@ -33,4 +33,10 @@ public interface TutorDao {
             "INNER JOIN tutors t ON u.id = t.userId " +
             "WHERE t.userId = :userId LIMIT 1")
     String getTutorEmail(String userId);
+
+
+
+    @Query("SELECT * FROM tutors WHERE userId = :userId")
+    TutorEntity findByUserId(String userId);
+
 }

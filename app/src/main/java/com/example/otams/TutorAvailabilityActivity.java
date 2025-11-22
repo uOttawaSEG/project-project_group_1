@@ -170,7 +170,7 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         btnRejectRequest.setOnClickListener(v -> {
             if (currentAvailability.studentEmail != null) {
                 currentAvailability.requestStatus = "REJECTED";
-                currentAvailability.studentEmail = null;
+//                currentAvailability.studentEmail = null;
                 dao.update(currentAvailability);
                 layout.removeAllViews();
                 loadCurrentAvailabilities();
