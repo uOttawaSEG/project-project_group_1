@@ -41,6 +41,15 @@
             android:textStyle="bold"
             android:paddingTop="6dp" />
 
+        <Button
+            android:id="@+id/btnCancelSession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="@android:color/white" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

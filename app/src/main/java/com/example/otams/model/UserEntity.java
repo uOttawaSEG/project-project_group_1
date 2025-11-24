@@ -24,8 +24,8 @@ public class UserEntity {
 
     public String firstName;
     public String lastName;
-    @NonNull public String email;        // 唯一
-    @NonNull public String passwordHash; // 不存明文
+    @NonNull public String email;
+    @NonNull public String passwordHash;
     public String phone;
     @NonNull public String role;         // "ADMIN" | "STUDENT" | "TUTOR"
 }

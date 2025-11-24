@@ -16,6 +16,8 @@
         android:layout_margin="16dp"
         android:text="QUIT" />
 
+
+
     <TextView
         android:layout_width="149dp"
         android:layout_height="wrap_content"

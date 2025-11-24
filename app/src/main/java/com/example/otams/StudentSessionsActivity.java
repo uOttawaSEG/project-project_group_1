@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,10 @@ import com.example.otams.data.UserDao;
 import com.example.otams.model.TutorAvailabilityEntity;
 import com.example.otams.model.TutorEntity;
 import com.example.otams.model.UserEntity;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class StudentSessionsActivity extends AppCompatActivity {
@@ -64,6 +69,73 @@ public class StudentSessionsActivity extends AppCompatActivity {
         }
     }
 
+    //Cancel function
+    private void attemptCancel(TutorAvailabilityEntity session){
+
+        switch (session.requestStatus) {
+            case "PENDING":
+                performCancel(session);
+                break;
+            case "ACCEPTED" :
+                if (canCancelAcceptedSession(session)){
+                    performCancel(session);
+                } else {
+                    Toast.makeText(this, "You can only cancel approved sessions at least 24 hours before the start time.", Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                Toast.makeText(this, "This session cannot be cancelled.", Toast.LENGTH_LONG).show();
+                break;
+        }
+
+    }
+    // Cancel helper method
+    private boolean canCancelAcceptedSession(TutorAvailabilityEntity session){
+        String timeStr = session.date + " " + session.startTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime sessionstartTime = LocalDateTime.parse(timeStr, formatter);
+
+        LocalDateTime now = LocalDateTime.now();
+        Duration timeDiff = Duration.between(now, sessionstartTime);
+        long diffinHours = timeDiff.toHours();
+
+        return diffinHours >= 24;
+    }
+    //reset fields + Update database
+    private void performCancel(TutorAvailabilityEntity session) {
+        //Reset
+        session.studentEmail = null;
+        session.requestStatus = "NONE";
+
+        // Update database
+        new Thread( () -> {
+            availabilityDao.update(session);
+
+            runOnUiThread(() -> {
+                loadSessions();
+                Toast.makeText(this, "Session is cancelled. " , Toast.LENGTH_SHORT).show();
+            });
+
+        }).start();
+
+    }
+
+    //Unit test: 24-hours cancellation rule
+    public static boolean testCanCancel(String date, String startTime, LocalDateTime now) {
+        try {
+            String timeStr = date + " " + startTime;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime sessionStart = LocalDateTime.parse(timeStr, formatter);
+
+            Duration diff = Duration.between(now, sessionStart);
+            return diff.toHours() >= 24;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
     private void showSession(TutorAvailabilityEntity session) {
         View item = LayoutInflater.from(this)
                 .inflate(R.layout.item_student_session, layout, false);
@@ -95,6 +167,24 @@ public class StudentSessionsActivity extends AppCompatActivity {
                 break;
             case "REJECTED":
                 viewStatus.setTextColor(0xFFF44336); // red
+                break;
+        }
+
+        // use button to cancel the session
+        Button btnCancel = item.findViewById(R.id.btnCancelSession);
+        btnCancel.setOnClickListener(v -> {
+            attemptCancel(session);
+        });
+
+        //set cancel button visibility
+        switch (session.requestStatus) {
+            case "PENDING" :
+            case "ACCEPTED" :
+                btnCancel.setVisibility(View.VISIBLE);
+                btnCancel.setEnabled(true);
+                break;
+            default:
+                btnCancel.setVisibility(View.GONE);
                 break;
         }
     }
