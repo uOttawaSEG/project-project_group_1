@@ -33,4 +33,5 @@ public class TutorEntity {
 
     @NonNull public String highestDegree;
     @NonNull public List<String> coursesOffered; // at least 1 course
+    @NonNull public double averageRating = 0.0;
 }

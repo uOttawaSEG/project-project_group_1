@@ -62,6 +62,10 @@ public interface TutorAvailabilityDao {
             "ORDER BY date DESC, startTime DESC")
     List<TutorAvailabilityEntity> getSessionsForStudent(String email);
 
+    @Query("SELECT AVG(rating) FROM tutor_availability WHERE tutorEmail = :email AND rating IS NOT NULL")
+    Double getAverageRatingForTutor(String email);
+
+
     @Update
     int update(TutorAvailabilityEntity slot);
 }

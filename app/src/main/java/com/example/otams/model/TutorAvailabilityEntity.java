@@ -38,4 +38,7 @@ public class TutorAvailabilityEntity {
     @Nullable
     public String studentEmail;
 
+    @Nullable
+    public Integer rating;
+
 }
