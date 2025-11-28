@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RatingBar;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -146,6 +148,7 @@ public class StudentSessionsActivity extends AppCompatActivity {
         TextView viewTutor = item.findViewById(R.id.viewTutor);
         TextView viewCourse = item.findViewById(R.id.viewCourse);
         TextView viewStatus = item.findViewById(R.id.viewStatus);
+        RatingBar ratingBar = item.findViewById(R.id.ratingBar);
 
         UserEntity tutorUser = userDao.findByEmail(session.tutorEmail);
         TutorEntity tutor = tutorDao.findByEmail(session.tutorEmail);
@@ -186,6 +189,26 @@ public class StudentSessionsActivity extends AppCompatActivity {
             default:
                 btnCancel.setVisibility(View.GONE);
                 break;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime sessionEndTime = LocalDateTime.parse(session.date + " " + session.endTime, formatter);
+
+        if (sessionEndTime.isBefore(LocalDateTime.now())) {
+            ratingBar.setIsIndicator(false); // allow rating
+            if (session.rating != null) {
+                ratingBar.setRating(session.rating);
+            }
+            ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
+                if (fromUser) {
+                    session.rating = (int) rating;
+                    new Thread(() -> availabilityDao.update(session)).start();
+                    Toast.makeText(this, "Rated " + (int) rating + " stars!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            ratingBar.setIsIndicator(true); // future sessions cannot be rated
+            ratingBar.setRating(session.rating != null ? session.rating : 0);
         }
     }
 }
