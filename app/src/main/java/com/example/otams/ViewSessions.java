@@ -85,8 +85,12 @@ public class ViewSessions extends AppCompatActivity {
         List<TutorAvailabilityEntity> previouslySelected = new ArrayList<TutorAvailabilityEntity>();
         for (int n = 0; n < allTutors.size(); n++) {
             TutorEntity tutor = allTutors.get(n);
-            if (tutor.coursesOffered.contains(courseCode)) {
-                validTutors.add(tutor);
+            String[] courses = tutor.coursesOffered.get(0).split("\\s+");
+            for (int q = 0; q < courses.length; q++) {
+                if (courseCode.equals(courses[q])) {
+                    validTutors.add(tutor);
+                    break;
+                }
             }
         }
         for (int n = 0; n < validTutors.size(); n++) {
