@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         db = ((App) getApplication()).getDb();
         repo = new UserRepository(db);
 
+        com.example.otams.util.FakeDataInserter.insertFakeSessions(db);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
