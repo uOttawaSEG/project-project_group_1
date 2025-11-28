@@ -35,6 +35,8 @@ public interface TutorDao {
     String getTutorEmail(String userId);
 
 
+    @Query("UPDATE tutors SET averageRating = :avg WHERE userId = :userId")
+    void updateAverageRating(String userId, double avg);
 
     @Query("SELECT * FROM tutors WHERE userId = :userId")
     TutorEntity findByUserId(String userId);

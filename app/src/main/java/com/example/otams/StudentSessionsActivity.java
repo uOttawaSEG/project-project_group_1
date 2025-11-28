@@ -138,6 +138,19 @@ public class StudentSessionsActivity extends AppCompatActivity {
     }
 
 
+    public void recalcTutorRating(String tutorEmail) {
+        Double avg = availabilityDao.getAverageRatingForTutor(tutorEmail);
+
+        // If no ratings yet
+        double value = (avg == null ? 0.0 : avg);
+
+        TutorEntity tutor = tutorDao.findByEmail(tutorEmail); // or findByUserId
+        if (tutor != null) {
+            tutorDao.updateAverageRating(tutor.userId, value);
+        }
+    }
+
+
     private void showSession(TutorAvailabilityEntity session) {
         View item = LayoutInflater.from(this)
                 .inflate(R.layout.item_student_session, layout, false);
@@ -202,7 +215,12 @@ public class StudentSessionsActivity extends AppCompatActivity {
             ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
                 if (fromUser) {
                     session.rating = (int) rating;
-                    new Thread(() -> availabilityDao.update(session)).start();
+                    new Thread(() -> {
+                        availabilityDao.update(session);
+
+                        recalcTutorRating(session.tutorEmail);
+
+                    }).start();
                     Toast.makeText(this, "Rated " + (int) rating + " stars!", Toast.LENGTH_SHORT).show();
                 }
             });

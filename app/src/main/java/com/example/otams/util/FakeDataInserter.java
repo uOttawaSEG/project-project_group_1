@@ -118,6 +118,16 @@ public class FakeDataInserter {
             session4.autoApprove = false;
             session4.requestStatus = "ACCEPTED";
             dao.insert(session4);
+
+            TutorAvailabilityEntity session5 = new TutorAvailabilityEntity();
+            session5.tutorEmail = "j@gmail.com";
+            session5.studentEmail = null;
+            session5.date = "2025-12-31";
+            session5.startTime = "16:00";
+            session5.endTime = "17:00";
+            session5.autoApprove = false;
+            session5.requestStatus = "PENDING";
+            dao.insert(session5);
         });
     }
 }
