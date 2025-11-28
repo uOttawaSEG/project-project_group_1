@@ -166,6 +166,7 @@ public class ViewSessions extends AppCompatActivity {
         TextView viewDate = itemView.findViewById(R.id.slotDate);
         TextView viewTime = itemView.findViewById(R.id.slotTime);
         TextView viewCourse = itemView.findViewById(R.id.slotCourse);
+        TextView viewRating = itemView.findViewById(R.id.slotRating);
 
         viewFirstName.setText(tutor.firstName);
         viewLastName.setText(tutor.lastName);
@@ -174,5 +175,8 @@ public class ViewSessions extends AppCompatActivity {
         String time = slot.startTime + "-" + slot.endTime;
         viewTime.setText(time);
         viewCourse.setText(listCourses);
+        double rating = TA.averageRating;
+        String ratingValue = String.valueOf(rating);
+        viewRating.setText(ratingValue);
     }
 }
