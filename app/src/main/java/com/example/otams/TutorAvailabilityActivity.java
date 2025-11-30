@@ -186,10 +186,23 @@ public class TutorAvailabilityActivity extends AppCompatActivity {
         // Check TutorAvailabilityEntity and TutorAvailabilityDao for help
         Button btnDelete = itemView.findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(v -> {
-            dao.delete(currentAvailability);
-            layout.removeAllViews();
-            loadCurrentAvailabilities();
-            Toast.makeText(TutorAvailabilityActivity.this, "Slot deleted", Toast.LENGTH_SHORT).show();
+
+            //can delete slot if it is already booked or pending
+            if (currentAvailability.studentEmail != null &&
+                    (currentAvailability.requestStatus.equals("PENDING")
+                    || currentAvailability.requestStatus.equals("ACCEPTED"))){
+
+                Toast.makeText(this,
+                        "A student has already booked or requested a session. This slot cannot be deleted." ,
+                        Toast.LENGTH_LONG).show();
+
+            }
+            else{
+                dao.delete(currentAvailability);
+                layout.removeAllViews();
+                loadCurrentAvailabilities();
+                Toast.makeText(TutorAvailabilityActivity.this, "Slot deleted", Toast.LENGTH_SHORT).show();
+            }
 
         });
 
