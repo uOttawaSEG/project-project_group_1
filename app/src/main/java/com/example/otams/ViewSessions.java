@@ -142,10 +142,7 @@ public class ViewSessions extends AppCompatActivity {
         TutorEntity TA = tutorDao.findByEmail(email);
         Button btnAdd = itemView.findViewById(R.id.btnAddSession);
         btnAdd.setOnClickListener(v -> {
-            if (TutorAvailabilityEntity.autoApproval == true) {
-                slot.requestStatus = "ACCEPTED";
-            }
-            else if (TutorAvailabilityEntity.autoApproval == false) {
+            if (slot.requestStatus.equals("NONE")) {
                 slot.requestStatus = "PENDING";
             }
             slot.studentEmail = studentEmail;
