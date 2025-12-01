@@ -118,6 +118,10 @@ public class UserRepositoryTest {
         @Override public StudentDao studentDao() { return studentDao; }
         @Override public TutorDao tutorDao() { return tutorDao; }
         @Override public RegistrationRequestDao registrationRequestDao() { return regDao; }
+
+        @Override public TutorAvailabilityDao tutorAvailabilityDao() { 
+        return null;
+        }
     }
 
     // ----------------------------------------------------------------
